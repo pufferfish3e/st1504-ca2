@@ -1,152 +1,93 @@
 # CA2 Notebooks — Quick Refresher
+All 5 notebooks are still skeletons (headings + one-liners), no real code written yet.
 
-## vae_gan_eda.ipynb (was eda_vae.ipynb, was eda.ipynb) — shared EDA for both VAE and GAN notebooks
-1. Load data:
-   - 1.1 load CIFAR10
-   - 1.2 inspect shapes/dtypes and class names
-2. Class balance — bar chart (confirmed even, 6000/class train).
-3. Visualize sample images — one row per class.
-4. Pixel value histogram (raw 0-255) → justifies normalizing later.
-5. Per-channel (R/G/B) mean/std, overall and per class.
-6. Per-class pixel variance → proxy for how "visually messy" a class is.
-7. Mean image per class (average all images in a class into one).
-8. Class similarity heatmap (NEW) — pairwise Euclidean distance between each class's mean image, 10x10 heatmap. Numeric cross-check for Section 9's scatter (do the same class pairs show up close in both views).
-9. PCA/t-SNE scatter → which classes visually overlap (e.g. cat/dog); notes cell now cross-references Section 8's heatmap.
-10. Color vs. grayscale preview → for the B&W discussion question.
-11. EDA summary — key takeaways.
+## vae_gan_eda.ipynb — shared EDA, no cleaning needed (clean benchmark dataset)
+1. Load data (1.1 load, 1.2 inspect shapes/classes)
+2. Class balance — bar chart (even, 6000/class)
+3. Sample images, one row/class
+4. Pixel histogram (0-255) → justifies normalization
+5. Per-channel R/G/B mean/std, overall + per class
+6. Per-class pixel variance → visual-complexity proxy
+7. Mean image per class
+8. Class similarity heatmap — pairwise dist between mean images, cross-checks Section 9
+9. PCA/t-SNE scatter — class overlap (cat/dog etc.), cross-refs Section 8
+10. Color vs. grayscale preview → B&W discussion question
+11. Summary
 
-No cleaning needed — CIFAR10 is already a clean benchmark dataset.
+## vae_baseline.ipynb — baseline CVAE, full rigor
+1. Imports
+2. Approach note
+3. Preprocessing: 3.1 normalize 0-1, 3.2 one-hot labels, 3.3 train/val split (augmentation NOT here — moved to improvement Exp 6)
+4. Sampling layer (reparam trick): 4.1 motivation, 4.2 objective, 4.3 impl, 4.4 alternatives
+5. Conditional encoder (5.1 diagram, 5.2 impl)
+6. Conditional decoder (6.1 diagram, 6.2 impl)
+7. Training step: 7.1 loss formulation, 7.2 pseudocode, 7.3 impl
+8. Train: 8.1 fit+save weights, 8.2 loss curves, 8.3 recon sanity check, 8.4 per-class recon error
+9. Latent space viz: 9.1 PCA scatter, 9.2 interpolation, 9.3 per-dim effect grid, 9.4 posterior check, 9.5 class centroid heatmap
+10. Generate 1000 images: 10.1 sample+decode, 10.2 save to disk, 10.3 preview grid
+11. Evaluate quality: 11.1 eye-test (primary metric), 11.2 per-class summary, 11.3 discussion class difficulty, 11.4 discussion color/B&W (PREDICTION only → answered in vae_improvement Exp 4), 11.5 FID score (frozen InceptionV3, promoted from optional after lit check — see FID note below)
+12. Conclusion — saves config/losses/eye-test/FID JSON for vae_improvement.ipynb
 
-## vae_baseline.ipynb (was vae.ipynb) — trains the baseline CVAE only, full rigor
-1. Imports/setup.
-2. Approach note — why conditional VAE fits this task.
-3. Preprocessing:
-   - 3.1 normalize: cast to float32, scale to 0-1
-   - 3.2 encode labels: one-hot the 10 labels (for conditioning)
-   - 3.3 train/val split: shuffle, carve validation set from the 50k train
-   - (augmentation is NOT here anymore — moved to vae_improvement.ipynb Experiment 6, since it's a tunable that belongs with the other experiments, not a baseline default)
-4. Sampling layer (reparameterization trick):
-   - 4.1 motivation (+ diagram), 4.2 objective (+ diagram), 4.3 implementation, 4.4 alternatives
-5. Conditional encoder — 5.1 what it does + diagram, 5.2 implementation.
-6. Conditional decoder — 6.1 what it does + diagram, 6.2 implementation.
-7. CVAE training step:
-   - 7.1 loss formulation, 7.2 architecture pseudocode (full train_step block, exempt from one-liner rule), 7.3 implementation
-8. Train the model:
-   - 8.1 fit and save best weights, 8.2 loss curves
-   - 8.3 reconstruction sanity check (encode/decode real val images, MSE)
-   - 8.4 per-class reconstruction error (bar chart)
-9. Latent space visualization:
-   - 9.1 PCA scatter by class, 9.2 latent interpolation, 9.3 per-dimension effect grid
-   - 9.4 aggregate posterior check (z_mean/z_var vs N(0,1)), 9.5 class centroid distance heatmap
-10. Generate 1000 class-conditioned images:
-    - 10.1 sample and decode (fresh z from prior + label, decoder only — NOT reconstruction)
-    - 10.2 save to disk (organized by class folder), 10.3 preview grid (inline sanity check)
-11. Evaluate generated image quality:
-    - 11.1 eye-test scoring (clear/marginal/nonsense; primary metric)
-    - 11.2 per-class score summary (bar chart)
-    - 11.3 discussion: class difficulty (evidence-based, from this notebook's own eye-test)
-    - 11.4 discussion: color vs B&W — PREDICTION ONLY (reasoning from EDA, no grayscale model trained here); explicitly hands off to vae_improvement.ipynb Section 7 for the empirical answer, so this isn't duplicated
-    - 11.5 FID score (NEW) — frozen pretrained InceptionV3 (imagenet, no top, avg pool) as a fixed feature extractor, Frechet distance between real val images and the 1000 generated images. Promoted from "optional/deferred" to implemented, per research check against CIFAR10 literature: FID is the standard quantitative metric everywhere, eye-test-only was a real evaluation-rubric risk.
-12. Baseline conclusion — saves config/losses/eye-test scores/FID to JSON for vae_improvement.ipynb to load (no retraining needed there).
+## vae_improvement.ipynb — lighter touch, experiments only log metrics (no .h5) except final model
+Builders re-defined here (self-contained, no shared .py). No repeat of baseline's heavy diagnostics.
+1. Imports
+2. Load baseline results (same preprocessing, reads JSON, no retrain)
+3. Comparison metrics, defined up front: 3.1 quality score (primary, score_from_labels), 3.2 val loss (secondary/diagnostic), 3.3 decision rule (quality score ranks, val loss = tiebreaker), shared results dict; FID tracked alongside as non-ranking quantitative check (loaded from baseline, recomputed for final model only, ablation table column)
+4. Exp 1: latent_dim ↑ — more capacity vs. less regularized space
+5. Exp 2: kl_weight ↓ (beta-VAE) — sharper recon vs. less structured latent
+6. Exp 3: architecture depth ↑ — finer textures vs. harder optimization
+7. Exp 4: color vs grayscale — answers assignment's B&W question empirically (vs. baseline's 11.4 prediction)
+8. Exp 5: engineered conditioning features — per-class RGB stats concat onto one-hot; answers rubric's feature-engineering line
+9. Exp 6: data augmentation (moved from baseline 3.4) — random flip vs. overfit risk
+10. Final model: 10.1 select best settings (combines winners of 1-3,5,6; Exp4 evaluated separately), 10.2 train+save .h5, 10.3 evaluate vs baseline (+ FID)
+11. Ablation summary — one table + one bar chart from results dict
+12. Conclusion — .h5 is Part A deliverable, feeds vae_gan_comparison.ipynb
 
-## vae_improvement.ipynb (new, renamed from planned improvements_vae.ipynb) — lighter touch than baseline
-Each experiment only does: build+train, then generate → score → compare vs baseline.
-No repeat of baseline's heavier diagnostics (recon sanity check, per-class error, posterior check, centroid heatmap) — those were for justifying the baseline's architecture once, not for every variant.
-1. Imports/setup (encoder/decoder-building code re-defined here directly, not shared via a .py file — keeps the notebook/.html export self-contained for grading).
-2. Load baseline results — same preprocessing, reads baseline's saved JSON, no retraining.
-3. Comparison metrics — defined up front, before any experiment runs, so results can't be judged after the fact:
-   - 3.1 quality score (primary): eye-test labels (clear=1/marginal=0.5/nonsense=0) → score_from_labels() → 0-1 average, per class and overall
-   - 3.2 validation loss (secondary/diagnostic): final val total + val reconstruction loss, catches overfitting/collapse the quality score might miss
-   - 3.3 decision rule: quality score ranks; val loss is only a tiebreaker/red-flag check
-   - shared results dict initialized here (seeded with baseline), every experiment appends its own quality score + val loss to it
-   - NOTE: experiments 1-4 log metrics only, no .h5 weights saved for them — only baseline and the Section 8 final model save weights
-   - FID (NEW) tracked alongside as a non-self-graded quantitative check — loaded from baseline JSON, recomputed only for the Section 10 final model (10.3), added as a column in Section 11's ablation table; not used to rank experiments 1-6, quality score still primary
-4. Experiment 1: latent_dim (bigger vs baseline) — hypothesis: more capacity to represent CIFAR10's variety, at the risk of a less regularized space.
-5. Experiment 2: kl_weight / beta-VAE (lower vs baseline) — hypothesis: sharper reconstructions, at the risk of a less structured latent space.
-6. Experiment 3: architecture depth (deeper conv stack vs baseline) — hypothesis: more capacity via depth to capture finer textures, at the risk of harder optimization.
-7. Experiment 4: color vs grayscale — hypothesis tied directly to the assignment's B&W discussion question; discussion cell here explicitly confirms/contradicts the prediction made in vae_baseline.ipynb 11.4, citing per-class score evidence (this is the ONE place the actual answer lives — not duplicated in baseline).
-8. Experiment 5: engineered conditioning features — hypothesis: concatenating each class's mean per-channel color stats (from vae_gan_eda.ipynb Section 5) onto the one-hot label gives richer conditioning than one-hot alone. Lives in improvement, not preprocessing, per the same rule as augmentation/depth/etc — anything tunable is an experiment, baseline stays plain. Answers rubric's "feature engineering (if desirable)" line with an actual tested addition, not just an EDA-stage justification note.
-9. Experiment 6: data augmentation — MOVED here from vae_baseline.ipynb's old 3.4 (was a with/without comparison sitting inside the "plain baseline," inconsistent with the baseline-stays-plain rule). Hypothesis: random flip exposes more per-class variation, should reduce overfitting to the exact 5000 training images per class.
-10. Final model — apply the 3.3 decision rule to combine winning settings from experiments 1-3, 5, and 6 into the single final model (Experiment 4/color-grayscale is evaluated separately, not folded in — it targets a discussion question, not a quality lever). Only model besides baseline whose weights are saved:
-   - 10.1 select best settings (table, from the shared results dict)
-   - 10.2 train the final model (training cell), then save its weights to .h5 in a separate dedicated cell
-   - 10.3 evaluate vs baseline
-11. Ablation summary — ONE table + ONE quality-score bar chart, both built from the shared results dict (no new comparison step, just surfaces numbers already logged during experiments 1-6 and the final model). Trimmed down from an earlier heavier version (4 separate plots) — the numbers already back up the final model choice, a light summary is enough.
-12. Conclusion — notes the final model's .h5 is the Part A weights deliverable, alongside the baseline's, and that results feed vae_gan_comparison.ipynb.
+## gan_baseline.ipynb — baseline conditional DCGAN, full rigor
+Reuses shared EDA. Deliberately plain: no label smoothing/TTUR/spectral norm (those are improvement experiments).
+1. Imports
+2. Approach note — why conditional (unconditional GAN across 10 classes converges worse)
+3. Preprocessing: 3.1 normalize [-1,1] (tanh output), 3.2 one-hot labels, 3.3 train/val split (augmentation moved to improvement Exp 6)
+4. Conditional generator (4.1 diagram, 4.2 impl: noise+label → transposed convs → tanh)
+5. Conditional discriminator (5.1 diagram, 5.2 impl: image+label map → strided convs → logit)
+6. Training step: 6.1 loss formulation (hard BCE targets), 6.2 pseudocode, 6.3 impl
+7. Train: 7.1 fit+save at fixed epoch (no single val loss to checkpoint against), 7.2 G/D loss curves same axes
+8. Diagnostics (baseline-only): 8.1 fixed-noise progression grid, 8.2 mode-collapse quantification (pairwise pixel dist), 8.3 nearest-neighbor memorization check
+9. Generate 1000 images: 9.1 sample+generate, 9.2 save to disk, 9.3 preview grid
+10. Evaluate quality: 10.1 eye-test (same criteria as CVAE), 10.2 per-class summary, 10.3 discussion class difficulty, 10.4 discussion color/B&W (PREDICTION → answered in gan_improvement Exp 4), 10.5 FID score (same InceptionV3 extractor as VAE side)
+11. Conclusion — saves config/losses/eye-test/FID JSON for gan_improvement.ipynb
 
-## gan_baseline.ipynb (new) — trains the baseline conditional DCGAN only, full rigor
-Reuses vae_gan_eda.ipynb — no separate GAN EDA, same CIFAR10 dataset/findings apply.
-Baseline is deliberately plain (per user: baseline = comparison point, all tuning happens in gan_improvement.ipynb): no label smoothing, no TTUR, no spectral norm here — hard 0/1 BCE targets, one shared learning rate, single Adam per network.
-1. Imports/setup.
-2. Approach note — why class-conditional DCGAN (unconditional GAN on all 10 classes at once is notably harder to converge than single-class, so conditioning is baseline not optional).
-3. Preprocessing:
-   - 3.1 normalize to [-1, 1] (NOT 0-1 — generator uses tanh output, unlike VAE's sigmoid)
-   - 3.2 encode labels: one-hot the 10 labels (for conditioning), 3.3 train/val split
-   - (augmentation is NOT here anymore — moved to gan_improvement.ipynb Experiment 6, same reasoning as the VAE side)
-4. Conditional generator — 4.1 what it does + diagram, 4.2 implementation (noise+label -> transposed convs -> tanh).
-5. Conditional discriminator — 5.1 what it does + diagram, 5.2 implementation (image+label map -> strided convs -> logit).
-6. GAN training step:
-   - 6.1 loss formulation (adversarial BCE, hard targets), 6.2 pseudocode (alternating D-then-G update block), 6.3 implementation
-7. Train the model:
-   - 7.1 fit + save weights at fixed final epoch (GANs have no single val loss to checkpoint against, unlike VAE)
-   - 7.2 loss curves — G and D loss on the SAME axes (their balance matters, not either curve alone)
-8. Diagnostics (baseline-only, heavier than experiments get):
-   - 8.1 fixed-noise progression grid (same z+label decoded every N epochs — "watch it learn" panel)
-   - 8.2 mode-collapse quantification (pairwise pixel-distance/std-dev across same-class batch — numeric, not eyeballed)
-   - 8.3 nearest-neighbor check vs real training images (memorization sanity check)
-9. Generate 1000 class-conditioned images — 9.1 sample+generate (fresh noise, generator only), 9.2 save to disk, 9.3 preview grid.
-10. Evaluate generated image quality:
-    - 10.1 eye-test scoring (SAME criteria as CVAE baseline, for direct comparability), 10.2 per-class score summary
-    - 10.3 discussion: class difficulty (evidence-based, compares pattern to CVAE's)
-    - 10.4 discussion: color vs B&W — PREDICTION ONLY, hands off to gan_improvement.ipynb Section 7 for the empirical answer
-    - 10.5 FID score (NEW) — same frozen InceptionV3 extractor as vae_baseline.ipynb, directly comparable across architectures
-11. Baseline conclusion — saves config/losses/eye-test scores/FID to JSON for gan_improvement.ipynb to load.
+## gan_improvement.ipynb — mirrors vae_improvement.ipynb's shape
+1. Imports (builders re-defined, self-contained)
+2. Load baseline results
+3. Comparison metrics: 3.1 quality score (SAME score_from_labels as VAE side — comparable), 3.2 G/D loss balance (secondary/diagnostic, GAN's analogue of val loss), 3.3 decision rule; FID tracked alongside, same treatment as VAE side
+4. Exp 1: TTUR (unequal G/D learning rates) — prevents D outrunning G
+5. Exp 2: label smoothing (0.9 real target) — keeps D gradients informative
+6. Exp 3: spectral norm on D — caps Lipschitz constant, stabilizes (chosen over "depth" to avoid redundancy with VAE's Exp 3)
+7. Exp 4: color vs grayscale — answers B&W question empirically (vs. baseline's 10.4 prediction)
+8. Exp 5: engineered conditioning features — same idea/source as VAE side
+9. Exp 6: data augmentation (moved from baseline 3.4)
+10. Final model: 10.1 select best (combines 1-3,5,6; Exp4 separate), 10.2 train+save .h5, 10.3 evaluate vs baseline (+ FID)
+11. Ablation summary — one table + one bar chart
+12. Conclusion — .h5 deliverable, feeds vae_gan_comparison.ipynb
 
-## gan_improvement.ipynb (new) — lighter touch than baseline, mirrors vae_improvement.ipynb's shape
-Researched against real-world CIFAR10 GAN practice (DCGAN/cGAN tutorials, label smoothing, spectral norm, TTUR literature) before finalizing — see conversation for sources.
-1. Imports/setup (generator/discriminator/train_step re-defined here directly, not shared via .py — self-contained for grading).
-2. Load baseline results — same preprocessing, reads baseline's saved JSON, no retraining.
-3. Comparison metrics — defined up front:
-   - 3.1 quality score (primary): SAME score_from_labels() definition as vae_improvement.ipynb, so GAN and VAE results are directly comparable
-   - 3.2 G/D loss balance (secondary/diagnostic): final gap between generator and discriminator loss — the GAN analogue of VAE's validation loss, since GANs have no single val loss
-   - 3.3 decision rule: quality score ranks; loss balance is only a tiebreaker/red-flag check
-   - shared results dict initialized here (seeded with baseline); NOTE: experiments 1-4 log metrics only, no .h5 saved — only baseline and Section 8 final model save weights
-   - FID (NEW) tracked alongside as a non-self-graded quantitative check, same as the VAE side — loaded from baseline JSON, recomputed only for the Section 10 final model, added as a column in Section 11's ablation table
-4. Experiment 1: TTUR (unequal G/D learning rates) — hypothesis: prevents discriminator from outrunning generator.
-5. Experiment 2: label smoothing (real target 0.9 vs 1.0) — hypothesis: keeps discriminator gradients informative, less overconfident.
-6. Experiment 3: spectral normalization on discriminator — hypothesis: caps discriminator's Lipschitz constant, stabilizes training (swapped in over plain "architecture depth" since vae_improvement.ipynb already covers depth as an axis — avoids redundancy between the two notebooks).
-7. Experiment 4: color vs grayscale — hypothesis tied to assignment's B&W question; discussion cell explicitly confirms/contradicts the prediction made in gan_baseline.ipynb 10.4 (this is the ONE place the GAN's actual answer lives).
-8. Experiment 5: engineered conditioning features — same idea as vae_improvement.ipynb's Experiment 5 (per-class color stats concatenated onto one-hot), reusing the same shared EDA source so both architectures' feature-engineering experiment draws from identical data.
-9. Experiment 6: data augmentation — MOVED here from gan_baseline.ipynb's old 3.4, same reasoning as the VAE side (baseline stays plain, augmentation is a tunable).
-10. Final model — apply the 3.3 decision rule to combine winning settings from experiments 1-3, 5, and 6 into the single final model (Experiment 4/color-grayscale evaluated separately, not folded in). Only model besides baseline whose weights are saved:
-   - 10.1 select best settings, 10.2 train + save weights in a dedicated cell, 10.3 evaluate vs baseline
-11. Ablation summary — ONE table + ONE quality-score bar chart, built from the results dict (same lightweight approach as vae_improvement.ipynb).
-12. Conclusion — notes final model's .h5 is the deliverable, feeding into vae_gan_comparison.ipynb.
+## vae_gan_comparison.ipynb — cross-model deliverable, no training
+Required deliverable (confirmed). Loads both final models' .h5 + results JSON.
+1. Imports (minimal loading code, self-contained)
+2. Load final models + results
+3. Quantitative: 3.1 quality score table/chart + FID column (both use identical scoring/extractor — valid comparison), 3.2 training stability side by side (VAE val loss vs GAN G/D balance, own terms)
+4. Qualitative: 4.1 side-by-side sample grid, 4.2 diversity check (reuses gan_baseline 8.2's metric)
+5. Discussion — verdict tied to mechanism (VAE blur vs GAN sharpness/instability), not just numbers
+6. Conclusion — headline finding; both models' weights remain deliverables regardless of verdict
 
-## vae_gan_comparison.ipynb (new) — the cross-model deliverable, does no training
-Confirmed by user as a required deliverable, not optional — loads BOTH final models (vae_improvement.ipynb's and gan_improvement.ipynb's saved .h5 + results JSON) and decides, with evidence, which architecture wins. This is what closes the loop on building two full model families for the same task.
-1. Imports/setup (minimal decoder/generator-loading code re-defined here, self-contained for grading).
-2. Load final models and results — no training here at all, purely reads what the two improvement notebooks already produced.
-3. Quantitative comparison:
-   - 3.1 overall + per-class quality score table and grouped bar chart, PLUS FID column (NEW) — valid comparison because both notebooks used the IDENTICAL score_from_labels() definition and the SAME InceptionV3 extractor throughout
-   - 3.2 training stability — VAE's val loss curve and GAN's G/D loss curves shown side by side, each on its own natural terms (not forced into one shared number)
-4. Qualitative comparison:
-   - 4.1 side-by-side sample grid, same classes from both models in matched rows
-   - 4.2 diversity check — same pixel-diversity metric from gan_baseline.ipynb 8.2, computed for both models' same-class batches
-5. Discussion: which architecture wins and why — verdict tied to mechanism (VAE reconstruction-loss blur vs. GAN adversarial sharpness/instability tradeoff), not just "number X is bigger."
-6. Conclusion — headline finding; notes both final models' weights remain actual deliverables regardless of the verdict, since the assignment allows submitting either or both.
+## Rubric gaps addressed (brutal-lecturer-critic review)
+- Presentation/Demo (9 marks): deliberately deferred, revisit once notebooks have real content
+- Cross-model comparison: was missing → vae_gan_comparison.ipynb
+- Feature engineering: was implicit → Experiment 5 in both improvement notebooks
+- Deliverables checklist: deferred by user, not tracked yet
 
-## Rubric gaps addressed this session (via brutal-lecturer-critic review)
-- Presentation/Demo (9 marks): still untouched — deliberately deferred, not forgotten. Revisit once notebooks have real content to draw slides from.
-- Cross-model comparison: was a missing deliverable, now vae_gan_comparison.ipynb above.
-- Feature engineering (rubric line): was implicit/absent, now Experiment 5 in both improvement notebooks — an actual tested addition, not just a justification sentence.
-- Deliverables checklist: flagged as a gap, explicitly deferred by user for a later session — not tracked yet.
-
-## FID added (was optional/stretch, now core) — via CIFAR10 literature research check
-Ran a research pass comparing this plan against real CIFAR10 CVAE/cGAN papers and practice. Findings:
-- Eye-test-only evaluation (no quantitative metric) was flagged as the single biggest real risk — every source treats FID as the standard quantitative metric for CIFAR10 generative work. Promoted from "optional/deferred" to implemented across all 5 notebooks (vae_baseline 11.5, gan_baseline 10.5, vae_improvement 10.3, gan_improvement 10.3, vae_gan_comparison 3.1).
-- One-hot concat conditioning confirmed as the "weakest" standard conditioning method vs projection discriminator/conditional batch norm — NOT worth swapping this late (architectural surgery, not a bolt-on); good one-line "limitations/future work" note in the comparison notebook's discussion section instead.
-- EMA of generator weights flagged as a cheap, low-risk optional 7th GAN experiment (not yet added — only add if time permits after the current 6 axes + FID are solid).
-- Everything else already in the plan (latent_dim/KL-weight axes, TTUR, label smoothing, spectral norm) confirmed as exactly the standard "cheap wins" tier for a project at this scale — no changes needed. Self-attention, progressive growing, hinge/WGAN-GP loss, ResNet blocks explicitly ruled out as disproportionate for 32x32/10-class coursework.
-
-Still just skeletons — headings + one-line placeholders, no real code written yet in any of the five notebooks.
+## FID note (promoted from optional/stretch to core, via CIFAR10 lit check)
+- Eye-test-only was flagged as the biggest real risk — FID is the standard quantitative metric everywhere in CIFAR10 gen-model literature. Now implemented in all 5 notebooks (see sections above).
+- One-hot concat conditioning is the "weakest" standard method (vs. projection discriminator/conditional batch norm) — NOT worth swapping this late; noted as a limitations/future-work line in the comparison notebook instead.
+- EMA of generator weights: cheap, low-risk optional 7th GAN experiment, not yet added.
+- Confirmed fine as-is: latent_dim/KL-weight axes, TTUR, label smoothing, spectral norm — standard "cheap wins" tier. Explicitly ruled out: self-attention, progressive growing, hinge/WGAN-GP loss, ResNet blocks — disproportionate for 32x32/10-class coursework.
