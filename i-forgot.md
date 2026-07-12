@@ -42,11 +42,12 @@ No cleaning needed — CIFAR10 is already a clean benchmark dataset.
     - 10.1 sample and decode (fresh z from prior + label, decoder only — NOT reconstruction)
     - 10.2 save to disk (organized by class folder), 10.3 preview grid (inline sanity check)
 11. Evaluate generated image quality:
-    - 11.1 eye-test scoring (clear/marginal/nonsense; FID/IS noted as optional, not implemented)
+    - 11.1 eye-test scoring (clear/marginal/nonsense; primary metric)
     - 11.2 per-class score summary (bar chart)
     - 11.3 discussion: class difficulty (evidence-based, from this notebook's own eye-test)
     - 11.4 discussion: color vs B&W — PREDICTION ONLY (reasoning from EDA, no grayscale model trained here); explicitly hands off to vae_improvement.ipynb Section 7 for the empirical answer, so this isn't duplicated
-12. Baseline conclusion — saves config/losses/eye-test scores to JSON for vae_improvement.ipynb to load (no retraining needed there).
+    - 11.5 FID score (NEW) — frozen pretrained InceptionV3 (imagenet, no top, avg pool) as a fixed feature extractor, Frechet distance between real val images and the 1000 generated images. Promoted from "optional/deferred" to implemented, per research check against CIFAR10 literature: FID is the standard quantitative metric everywhere, eye-test-only was a real evaluation-rubric risk.
+12. Baseline conclusion — saves config/losses/eye-test scores/FID to JSON for vae_improvement.ipynb to load (no retraining needed there).
 
 ## vae_improvement.ipynb (new, renamed from planned improvements_vae.ipynb) — lighter touch than baseline
 Each experiment only does: build+train, then generate → score → compare vs baseline.
@@ -59,6 +60,7 @@ No repeat of baseline's heavier diagnostics (recon sanity check, per-class error
    - 3.3 decision rule: quality score ranks; val loss is only a tiebreaker/red-flag check
    - shared results dict initialized here (seeded with baseline), every experiment appends its own quality score + val loss to it
    - NOTE: experiments 1-4 log metrics only, no .h5 weights saved for them — only baseline and the Section 8 final model save weights
+   - FID (NEW) tracked alongside as a non-self-graded quantitative check — loaded from baseline JSON, recomputed only for the Section 10 final model (10.3), added as a column in Section 11's ablation table; not used to rank experiments 1-6, quality score still primary
 4. Experiment 1: latent_dim (bigger vs baseline) — hypothesis: more capacity to represent CIFAR10's variety, at the risk of a less regularized space.
 5. Experiment 2: kl_weight / beta-VAE (lower vs baseline) — hypothesis: sharper reconstructions, at the risk of a less structured latent space.
 6. Experiment 3: architecture depth (deeper conv stack vs baseline) — hypothesis: more capacity via depth to capture finer textures, at the risk of harder optimization.
@@ -97,7 +99,8 @@ Baseline is deliberately plain (per user: baseline = comparison point, all tunin
     - 10.1 eye-test scoring (SAME criteria as CVAE baseline, for direct comparability), 10.2 per-class score summary
     - 10.3 discussion: class difficulty (evidence-based, compares pattern to CVAE's)
     - 10.4 discussion: color vs B&W — PREDICTION ONLY, hands off to gan_improvement.ipynb Section 7 for the empirical answer
-11. Baseline conclusion — saves config/losses/eye-test scores to JSON for gan_improvement.ipynb to load.
+    - 10.5 FID score (NEW) — same frozen InceptionV3 extractor as vae_baseline.ipynb, directly comparable across architectures
+11. Baseline conclusion — saves config/losses/eye-test scores/FID to JSON for gan_improvement.ipynb to load.
 
 ## gan_improvement.ipynb (new) — lighter touch than baseline, mirrors vae_improvement.ipynb's shape
 Researched against real-world CIFAR10 GAN practice (DCGAN/cGAN tutorials, label smoothing, spectral norm, TTUR literature) before finalizing — see conversation for sources.
@@ -108,6 +111,7 @@ Researched against real-world CIFAR10 GAN practice (DCGAN/cGAN tutorials, label 
    - 3.2 G/D loss balance (secondary/diagnostic): final gap between generator and discriminator loss — the GAN analogue of VAE's validation loss, since GANs have no single val loss
    - 3.3 decision rule: quality score ranks; loss balance is only a tiebreaker/red-flag check
    - shared results dict initialized here (seeded with baseline); NOTE: experiments 1-4 log metrics only, no .h5 saved — only baseline and Section 8 final model save weights
+   - FID (NEW) tracked alongside as a non-self-graded quantitative check, same as the VAE side — loaded from baseline JSON, recomputed only for the Section 10 final model, added as a column in Section 11's ablation table
 4. Experiment 1: TTUR (unequal G/D learning rates) — hypothesis: prevents discriminator from outrunning generator.
 5. Experiment 2: label smoothing (real target 0.9 vs 1.0) — hypothesis: keeps discriminator gradients informative, less overconfident.
 6. Experiment 3: spectral normalization on discriminator — hypothesis: caps discriminator's Lipschitz constant, stabilizes training (swapped in over plain "architecture depth" since vae_improvement.ipynb already covers depth as an axis — avoids redundancy between the two notebooks).
@@ -124,7 +128,7 @@ Confirmed by user as a required deliverable, not optional — loads BOTH final m
 1. Imports/setup (minimal decoder/generator-loading code re-defined here, self-contained for grading).
 2. Load final models and results — no training here at all, purely reads what the two improvement notebooks already produced.
 3. Quantitative comparison:
-   - 3.1 overall + per-class quality score table and grouped bar chart (valid comparison because both notebooks used the IDENTICAL score_from_labels() definition throughout)
+   - 3.1 overall + per-class quality score table and grouped bar chart, PLUS FID column (NEW) — valid comparison because both notebooks used the IDENTICAL score_from_labels() definition and the SAME InceptionV3 extractor throughout
    - 3.2 training stability — VAE's val loss curve and GAN's G/D loss curves shown side by side, each on its own natural terms (not forced into one shared number)
 4. Qualitative comparison:
    - 4.1 side-by-side sample grid, same classes from both models in matched rows
@@ -138,6 +142,11 @@ Confirmed by user as a required deliverable, not optional — loads BOTH final m
 - Feature engineering (rubric line): was implicit/absent, now Experiment 5 in both improvement notebooks — an actual tested addition, not just a justification sentence.
 - Deliverables checklist: flagged as a gap, explicitly deferred by user for a later session — not tracked yet.
 
-Optional/stretch, not committed to any notebook's core plan: FID score via pretrained InceptionV3 (assignment lists it as optional) — add only if time permits after core notebooks are solid.
+## FID added (was optional/stretch, now core) — via CIFAR10 literature research check
+Ran a research pass comparing this plan against real CIFAR10 CVAE/cGAN papers and practice. Findings:
+- Eye-test-only evaluation (no quantitative metric) was flagged as the single biggest real risk — every source treats FID as the standard quantitative metric for CIFAR10 generative work. Promoted from "optional/deferred" to implemented across all 5 notebooks (vae_baseline 11.5, gan_baseline 10.5, vae_improvement 10.3, gan_improvement 10.3, vae_gan_comparison 3.1).
+- One-hot concat conditioning confirmed as the "weakest" standard conditioning method vs projection discriminator/conditional batch norm — NOT worth swapping this late (architectural surgery, not a bolt-on); good one-line "limitations/future work" note in the comparison notebook's discussion section instead.
+- EMA of generator weights flagged as a cheap, low-risk optional 7th GAN experiment (not yet added — only add if time permits after the current 6 axes + FID are solid).
+- Everything else already in the plan (latent_dim/KL-weight axes, TTUR, label smoothing, spectral norm) confirmed as exactly the standard "cheap wins" tier for a project at this scale — no changes needed. Self-attention, progressive growing, hinge/WGAN-GP loss, ResNet blocks explicitly ruled out as disproportionate for 32x32/10-class coursework.
 
 Still just skeletons — headings + one-line placeholders, no real code written yet in any of the five notebooks.
