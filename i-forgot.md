@@ -1,6 +1,6 @@
 # CA2 Notebooks — Quick Refresher
 
-## eda_vae.ipynb (was eda.ipynb)
+## vae_gan_eda.ipynb (was eda_vae.ipynb, was eda.ipynb) — shared EDA for both VAE and GAN notebooks
 1. Load data:
    - 1.1 load CIFAR10
    - 1.2 inspect shapes/dtypes and class names
@@ -10,9 +10,10 @@
 5. Per-channel (R/G/B) mean/std, overall and per class.
 6. Per-class pixel variance → proxy for how "visually messy" a class is.
 7. Mean image per class (average all images in a class into one).
-8. PCA/t-SNE scatter → which classes visually overlap (e.g. cat/dog).
-9. Color vs. grayscale preview → for the B&W discussion question.
-10. EDA summary — key takeaways.
+8. Class similarity heatmap (NEW) — pairwise Euclidean distance between each class's mean image, 10x10 heatmap. Numeric cross-check for Section 9's scatter (do the same class pairs show up close in both views).
+9. PCA/t-SNE scatter → which classes visually overlap (e.g. cat/dog); notes cell now cross-references Section 8's heatmap.
+10. Color vs. grayscale preview → for the B&W discussion question.
+11. EDA summary — key takeaways.
 
 No cleaning needed — CIFAR10 is already a clean benchmark dataset.
 
@@ -62,7 +63,7 @@ No repeat of baseline's heavier diagnostics (recon sanity check, per-class error
 5. Experiment 2: kl_weight / beta-VAE (lower vs baseline) — hypothesis: sharper reconstructions, at the risk of a less structured latent space.
 6. Experiment 3: architecture depth (deeper conv stack vs baseline) — hypothesis: more capacity via depth to capture finer textures, at the risk of harder optimization.
 7. Experiment 4: color vs grayscale — hypothesis tied directly to the assignment's B&W discussion question; discussion cell here explicitly confirms/contradicts the prediction made in vae_baseline.ipynb 11.4, citing per-class score evidence (this is the ONE place the actual answer lives — not duplicated in baseline).
-8. Experiment 5: engineered conditioning features — hypothesis: concatenating each class's mean per-channel color stats (from vae_eda.ipynb Section 5) onto the one-hot label gives richer conditioning than one-hot alone. Lives in improvement, not preprocessing, per the same rule as augmentation/depth/etc — anything tunable is an experiment, baseline stays plain. Answers rubric's "feature engineering (if desirable)" line with an actual tested addition, not just an EDA-stage justification note.
+8. Experiment 5: engineered conditioning features — hypothesis: concatenating each class's mean per-channel color stats (from vae_gan_eda.ipynb Section 5) onto the one-hot label gives richer conditioning than one-hot alone. Lives in improvement, not preprocessing, per the same rule as augmentation/depth/etc — anything tunable is an experiment, baseline stays plain. Answers rubric's "feature engineering (if desirable)" line with an actual tested addition, not just an EDA-stage justification note.
 9. Experiment 6: data augmentation — MOVED here from vae_baseline.ipynb's old 3.4 (was a with/without comparison sitting inside the "plain baseline," inconsistent with the baseline-stays-plain rule). Hypothesis: random flip exposes more per-class variation, should reduce overfitting to the exact 5000 training images per class.
 10. Final model — apply the 3.3 decision rule to combine winning settings from experiments 1-3, 5, and 6 into the single final model (Experiment 4/color-grayscale is evaluated separately, not folded in — it targets a discussion question, not a quality lever). Only model besides baseline whose weights are saved:
    - 10.1 select best settings (table, from the shared results dict)
@@ -72,7 +73,7 @@ No repeat of baseline's heavier diagnostics (recon sanity check, per-class error
 12. Conclusion — notes the final model's .h5 is the Part A weights deliverable, alongside the baseline's, and that results feed vae_gan_comparison.ipynb.
 
 ## gan_baseline.ipynb (new) — trains the baseline conditional DCGAN only, full rigor
-Reuses eda_vae.ipynb — no separate GAN EDA, same CIFAR10 dataset/findings apply.
+Reuses vae_gan_eda.ipynb — no separate GAN EDA, same CIFAR10 dataset/findings apply.
 Baseline is deliberately plain (per user: baseline = comparison point, all tuning happens in gan_improvement.ipynb): no label smoothing, no TTUR, no spectral norm here — hard 0/1 BCE targets, one shared learning rate, single Adam per network.
 1. Imports/setup.
 2. Approach note — why class-conditional DCGAN (unconditional GAN on all 10 classes at once is notably harder to converge than single-class, so conditioning is baseline not optional).
