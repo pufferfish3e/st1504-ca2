@@ -2,3 +2,15 @@ generated_images/
 checkpoints/
 __pycache__/
 .ipynb_checkpoints/
+
+*.tex
+*.bib
+*.log
+*.aux
+*.out
+*.bbl
+*.blg
+*fdb_latexmk
+*.fls
+*synctex.gz
+*.pdf
