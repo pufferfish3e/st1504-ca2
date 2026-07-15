@@ -1,5 +1,5 @@
 # CA2 Notebooks — Quick Refresher
-All 5 notebooks are still skeletons (headings + one-liners), no real code written yet.
+`vae_gan_eda.ipynb` and `vae_baseline.ipynb` are fully implemented and verified (see updated section below). The other 4 notebooks are still skeletons (headings + one-liners), no real code written yet.
 
 ## vae_gan_eda.ipynb — shared EDA, no cleaning needed (clean benchmark dataset)
 1. Load data (1.1 load, 1.2 inspect shapes/classes)
@@ -14,19 +14,20 @@ All 5 notebooks are still skeletons (headings + one-liners), no real code writte
 10. Color vs. grayscale preview → B&W discussion question
 11. Summary
 
-## vae_baseline.ipynb — baseline CVAE, full rigor
+## vae_baseline.ipynb — baseline CVAE, full rigor — DONE (verified end-to-end, 2026-07-14)
+FID was dropped entirely (see FID note below, now outdated/reversed) in favor of eye-test + CNN reclassifier + CLIP zero-shot as the three quality metrics. All sections implemented and rerun cleanly (30 epochs, train/val loss converge to ~1817.7/1820.5, no overfitting).
 1. Imports
 2. Approach note
 3. Preprocessing: 3.1 normalize 0-1, 3.2 one-hot labels, 3.3 train/val split (augmentation NOT here — moved to improvement Exp 6)
-4. Sampling layer (reparam trick): 4.1 motivation, 4.2 objective, 4.3 impl, 4.4 alternatives
+4. Sampling layer (reparam trick): 4.1 motivation, 4.2 objective/impl (Sampling module), 4.3 alternatives
 5. Conditional encoder (5.1 diagram, 5.2 impl)
 6. Conditional decoder (6.1 diagram, 6.2 impl)
-7. Training step: 7.1 loss formulation, 7.2 pseudocode, 7.3 impl
-8. Train: 8.1 fit+save weights, 8.2 loss curves, 8.3 recon sanity check, 8.4 per-class recon error
-9. Latent space viz: 9.1 PCA scatter, 9.2 interpolation, 9.3 per-dim effect grid, 9.4 posterior check, 9.5 class centroid heatmap
-10. Generate 1000 images: 10.1 sample+decode, 10.2 save to disk, 10.3 preview grid
-11. Evaluate quality: 11.1 eye-test (primary metric), 11.2 per-class summary, 11.3 discussion class difficulty, 11.4 discussion color/B&W (PREDICTION only → answered in vae_improvement Exp 4), 11.5 FID score (frozen InceptionV3, promoted from optional after lit check — see FID note below)
-12. Conclusion — saves config/losses/eye-test/FID JSON for vae_improvement.ipynb
+7. Training step: 7.1 loss formulation, 7.2 pseudocode, 7.3 impl (CVAE class)
+8. Train: 8.1 fit+save weights (DataLoader-based), 8.2 loss curves, 8.3 recon sanity check (val MSE ~0.011), 8.4 per-class recon error (automobile/truck worst, deer/ship/bird best)
+9. Latent space viz: 9.1 PCA scatter, 9.2 interpolation, 9.3 per-dim effect grid (only dim 3 shows a visible effect), 9.4 posterior check (bimodal z_var → partial posterior collapse, ~half the latent dims unused), 9.5 class centroid heatmap
+10. Generate 1000 images: 10.1 sample+decode, 10.2 preview grid, 10.3 save to disk (swapped order + renamed from original skeleton)
+11. Evaluate quality (FID replaced): 11.1 eye-test (manual c/m/n scoring, primary metric), 11.2 per-class tally, 11.3 discussion class difficulty (cat best, automobile/truck worst), 11.4 discussion color/B&W (PREDICTION only → answered in vae_improvement Exp 4), 11.5 CNN classifier reclassification (73% test acc; agrees with eye-test on cat/automobile/truck, disagrees on frog/dog), 11.6 CLIP zero-shot (collapsed onto predicting "dog" for nearly everything — treated as a failed/uninformative metric, not a ranking), 11.7 eye-test/CNN/CLIP comparison
+12. Conclusion — saves config/losses/eye-test/CNN/CLIP results to `vae_baseline_results.json` for vae_improvement.ipynb (no FID field anymore)
 
 ## vae_improvement.ipynb — lighter touch, experiments only log metrics (no .h5) except final model
 Builders re-defined here (self-contained, no shared .py). No repeat of baseline's heavy diagnostics.
@@ -86,7 +87,10 @@ Required deliverable (confirmed). Loads both final models' .h5 + results JSON.
 - Feature engineering: was implicit → Experiment 5 in both improvement notebooks
 - Deliverables checklist: deferred by user, not tracked yet
 
-## FID note (promoted from optional/stretch to core, via CIFAR10 lit check)
+## FID note — REVERSED for vae_baseline.ipynb (2026-07-14)
+FID was dropped from `vae_baseline.ipynb` entirely (all mentions, code, JSON field) in favor of eye-test + CNN reclassifier + CLIP zero-shot. The plan below (written when FID was promoted to core) is now stale for the VAE side. Still need to decide: drop FID from `gan_baseline.ipynb`/`gan_improvement.ipynb`/`vae_gan_comparison.ipynb` too for consistency, or keep it there since GAN literature leans on FID more heavily than VAE literature does — not yet decided.
+
+## FID note (ORIGINAL — promoted from optional/stretch to core, via CIFAR10 lit check; superseded above for the VAE side)
 - Eye-test-only was flagged as the biggest real risk — FID is the standard quantitative metric everywhere in CIFAR10 gen-model literature. Now implemented in all 5 notebooks (see sections above).
 - One-hot concat conditioning is the "weakest" standard method (vs. projection discriminator/conditional batch norm) — NOT worth swapping this late; noted as a limitations/future-work line in the comparison notebook instead.
 - EMA of generator weights: cheap, low-risk optional 7th GAN experiment, not yet added.
