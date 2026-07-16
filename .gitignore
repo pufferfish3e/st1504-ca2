@@ -14,3 +14,21 @@ __pycache__/
 *.fls
 *synctex.gz
 *.pdf
+
+# Local datasets and downloaded archives
+datasets/
+data/
+cifar-10-*/
+*.csv
+*.tsv
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+
+# Trained model weights and checkpoints
+*.pt
+*.pth
+*.ckpt
+*.h5
+*.keras
