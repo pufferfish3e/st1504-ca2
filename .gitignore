@@ -4,6 +4,7 @@ __pycache__/
 .ipynb_checkpoints/
 
 venv
+gan_generated_images
 *.tex
 *.bib
 *.log
