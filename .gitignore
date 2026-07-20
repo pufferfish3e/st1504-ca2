@@ -14,9 +14,12 @@ __pycache__/
 *.fls
 *synctex.gz
 *.pdf
+*.latexmkrc
+*.dqn-backup
 
 # Local datasets and downloaded archives
 datasets/
+images/
 data/
 cifar-10-*/
 *.csv
@@ -27,7 +30,6 @@ cifar-10-*/
 *.zip
 
 # Trained model weights and checkpoints
-*.pt
 *.pth
 *.ckpt
 *.h5
