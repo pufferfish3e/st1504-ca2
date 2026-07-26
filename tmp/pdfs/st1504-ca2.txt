@@ -1,0 +1,408 @@
+                                                 Official (Closed), Non-Sensitive
+
+ST1504 DEEP LEARNING ASSIGNMENT 2
+
+Images from https://www.cs.toronto.edu/~kriz/cifar.html
+
+School Name  School of Computing
+Semester     AY2026/27 Semester 1
+Course Name  DAAA
+Module Code  ST1504
+Module Name  Deep Learning
+
+                                                         Page 1 of 9
+                                                 Official (Closed), Non-Sensitive
+
+ST1504 DEEP LEARNING ASSIGNMENT 2
+
+Assignment 2 (CA2: 40%)
+
+The objective of the assignment is to help you gain a better understanding of
+applying Generative Deep Learning and Reinforcement Learning (RL).
+
+There are three parts in this assignment, Parts A, B, C.
+
+Guidelines
+
+1. You are to work in groups of two for Parts A and B. For Part C, this is an
+         individual task.
+
+2. In this assignment, you will:
+
+             A. Create GAN/VAE for image generation and evaluate the performance
+                  of the network.
+
+             B. Create RL to solve the task at hand.
+             C. Carry out some literature research and prepare a technical paper on
+
+                  CNN, RNN, GAN/VAE or RL. (Just ONE topic.)
+
+3. For Parts A and B, you should prepare the following:
+
+        a) Jupyter notebook including your code, comments and visualisations
+             (.ipynb).
+
+        b) In addition, please save a copy of the Jupyter notebook as a .html file.
+        c) Include your best neural network weights (.h5 file).
+        d) A deck of presentation slides (.pptx file) for your project.
+        e) A statement indicating the contributions by each member of the group,
+
+             including percentage of workload for specific contributions.
+
+             NOTE: Each student must be well-versed with both Parts A and B. Whilst
+             you can consider splitting the workload, you will still be evaluated on
+             everything in this CA. You cannot expect to only do one part but know little
+             or nothing about the other part.
+
+4. For Part C, you should submit your file as a Word (.docx) or .pdf document. If
+         you write your own codes, you must include them.
+
+5. Submit all materials in a zipped file. Each student must submit his/her own
+         complete set of files, even if you are sharing for Parts A and B.
+
+         Any missing files (like missing .h5 file for best weights, missing .html
+         file for your code, etc.) would incur marks deduction.
+
+6. The normal SP's academic policies on Copyright and Plagiarism applies.
+         Please note that you are to cite all sources. You may refer to the citation
+         guide available at: https://sp-sg.libguides.com/citation
+
+                                                  Page 2 of 9
+                                                 Official (Closed), Non-Sensitive
+
+ST1504 DEEP LEARNING ASSIGNMENT 2
+
+7. You need to submit your declaration of academic integrity. You may access
+         this document on Brightspace. Without this, your submission is deemed
+         incomplete.
+
+Submission Details
+
+Deadline: 11 Aug 2026, 08:00 AM
+Submit through: Brightspace
+
+Late Submission
+
+50% of the marks will be deducted for assignments that are received within ONE (1)
+calendar day after the submission deadline. No marks will be given thereafter.
+Exceptions to this policy will be given to students with valid LOA on medical or
+compassionate grounds. Students in such cases will need to inform the lecturer as
+soon as reasonably possible. Students are not to assume on their own that their
+deadline has been extended.
+
+Neural network models
+
+You must build your own neural network models, with explanations and justifications.
+Your neural network models can be improved upon with tweaks to your
+architectures.
+If you wish to implement transfer learning, it is only acceptable after you have done
+the above (building your own models with justifications).
+Otherwise, transfer learning is rejected.
+Save the best weights of your neural networks. This is important for reproducibility
+without having to re-train over some extended duration.
+
+Reminder: Please check that all files are valid, especially
+after zipping. If files cannot be opened, it would be
+considered as no submission. It is your responsibility as
+students to ensure this is properly carried out.
+
+Learning outcomes
+
+    1) Create generative deep learning for creative artificial intelligence.
+    2) Create deep reinforcement learning for agents solving some desired tasks.
+    3) Explain advanced deep neural network architectures within the context of
+
+         image classification, natural language processing, generative deep learning,
+         and reinforcement learning.
+
+                                                  Page 3 of 9
+                                                 Official (Closed), Non-Sensitive
+
+ST1504 DEEP LEARNING ASSIGNMENT 2
+
+PART A: GAN/VAE (45 marks)
+
+Task
+
+Apply some suitable GAN/VAE architectures to the problem of image generation. You
+can use either GAN or VAE, or both. Use the given dataset for CIFAR10 to create
+1000 small images. There should be 10 classes of images for you to generate. You
+must submit your generated images (otherwise, there would be marks deduction).
+You should implement some ways to evaluate the quality of your images:
+A simple "by-eye" or "eye-power" method is to just generate say 100 images, and count
+manually how many are acceptable images (not perfect, but display some plausible features of
+the images --- perhaps as "clear", "marginal", "nonsense"). Alternatively, you can consider
+other metrics/indicators. (Optional metrics: Fréchet Inception Distance, Inception Score.)
+If you are asked to generate images of a specific class, propose a way of doing it.
+If you are asked to generate black-and-white images instead of coloured ones, do you
+think it would be easier or harder to produce better quality results?
+What class(es) is/are relatively easier/harder to generate? Why?
+Note: Do not worry too much about generating "perfect-looking images". Whilst quality
+of images would represent the quality of your model, the more important aspects are
+the process, your workflow and planning, your EDA, evaluation analysis, etc., as a
+whole.
+As this is a pair-work, you should discuss and optimise the GAN/VAE training between
+yourselves, making use of available computing resources for both of you.
+
+Dataset
+
+Use the CIFAR10 dataset:
+                                   tf.keras.datasets.cifar10.load_data()
+
+You cannot use any external data to train your model.
+Nevertheless, you are allowed to apply augmentation on the provided data, if you wish.
+If you choose to do so, you must concretely explain why you make such a choice, as
+well as investigate whether it is actually beneficial.
+
+                                                  Page 4 of 9
+                                                 Official (Closed), Non-Sensitive
+
+ST1504 DEEP LEARNING ASSIGNMENT 2
+
+Submission requirements for Part A
+
+    1. Submit a zip file containing all the project files (source code, Jupyter
+             notebook .ipynb file, .html file, and best neural network weights .h5, slides,
+             1000 generated images).
+
+    2. Submit a .docx file containing the list of specific contributions by each team
+             member in the deliverables for Part A.
+
+    3. Submit online via the Assignment link.
+
+Evaluation criteria:
+
+Component                Description                                          Marks
+
+                         Provide background of the problem. Explain the
+
+Background research, approach(es) being taken to solve the problem.           9
+
+feature engineering      Some feature engineering on the provided dataset
+
+                         may be carried out (if desirable).
+
+Application of GAN/VAE,  Describe the GAN/VAE framework(s) being used in      9
+       explanation of    this problem. Explain clearly why such GAN/VAE
+      architecture(s)    framework(s) can be used and how it can solve
+                         this problem.
+
+Evaluation and           Evaluate the performance of the GAN/VAE model
+
+improvements of GAN/VAE in this problem. Improve the GAN/VAE model            9
+
+performance              performance systematically.
+
+                         Give a good, clear presentation strictly within the
+
+Presentation/Demo        allocated time. Quality of presentation slides       9
+                         should be engaging and effectively helps with
+
+                         communicating the key points.
+
+                         Jupyter notebook should be well-documented with
+
+Quality of report (Jupyter) comments and markdowns to explain the codes. It   9
+
+                         should also be well-organised.
+
+Note: You are building deep neural networks, which are remarkable things that in this case,
+produce creative outputs. Think about how long it took top tech companies to train state-of-
+the-art models, like ChatGPT, Co-Pilot, DeepSeek, etc., with massive computing power. In this
+exercise, you have the opportunity to build your very own such generative AI models.
+
+Yes, it will take time to train, but do enjoy the process and your results. Make use of the time
+in the lab to train your models. Do not worry too much about final results, as the more
+important thing is your workflow on building the models.
+
+                         Page 5 of 9
+                                                 Official (Closed), Non-Sensitive
+
+ST1504 DEEP LEARNING ASSIGNMENT 2
+
+PART B: REINFORCEMENT LEARNING (45 marks)
+
+Task
+
+Apply a suitable modification of deep Q-network (DQN) architecture to the problem.
+Your model should exert some appropriate torque on the pendulum to balance it.
+
+You must use DQN and satisfactorily demonstrate its viability.
+
+(Note: The action space here is continuous. Hence, you should consider discretising
+it in order to apply DQN.)
+
+Here are several setups that you must investigate (set different values of  when
+creating the "env" for the pendulum):
+
+    1) The default strength for gravity, no need to change .
+    2) Free-fall,  = 0.
+    3) Anti-gravity,  = -10.
+    4) Supergravity,  = 15.
+
+In your work, you should plan clearly what you are doing, your approaches, and how
+you systematically optimise your solutions.
+
+For example, what hyperparameters can you tune? Is one trial enough or should you
+repeat the trials? Why?
+
+How do you conclusively demonstrate your so-called "best setup" to be the best? Are
+you considering fastest learning, most stable learning, or some other criteria that you
+choose to define?
+
+Optional: You may consider other reinforcement learning architectures, if you wish,
+but only after successfully implementing DQN. Otherwise, any other non-DQN
+architecture will be rejected.
+
+Dataset
+
+Please use the following environment from OpenAI Gym.
+https://www.gymlibrary.dev/environments/classic_control/pendulum/
+
+NOTE: Stay within the older version of gym 0.17.3, as implemented in the lab for cartpole.
+
+Submission requirements for Part B
+
+    1. Submit a zip file containing all the project files (source code, Jupyter
+             notebook .ipynb file, .html file, and best neural network weights .h5, slides).
+
+    2. Submit a .docx file containing the list of specific contributions by each team
+             member in the deliverables for Part B.
+
+    3. Submit online via the Assignment link.
+
+                                                  Page 6 of 9
+                                                 Official (Closed), Non-Sensitive
+
+ST1504 DEEP LEARNING ASSIGNMENT 2
+
+Evaluation criteria:
+
+Component             Description                                                  Marks
+
+Background research,  Provide background of the problem. Explain the               9
+    explanations of   approach(es) being taken to solve the problem.
+
+ approach(es) taken
+
+Application of RL with Describe the RL framework being used in this
+
+appropriate rationale and problem. Explain clearly why this RL framework           9
+
+explanations          can be used and how it can solve this problem.
+
+    Evaluation and    Evaluate the performance of the RL agent in this             9
+improvements of RL    problem. Improve the RL agent's performance
+                      systematically.
+
+                      Give a good, clear presentation strictly within the
+
+Presentation/Demo     allocated time. Quality of presentation slides               9
+                      should be engaging and effectively helps with
+
+                      communicating the key points.
+
+                      Jupyter notebook should be well-documented with
+
+Quality of report (Jupyter) comments and markdowns to explain the codes. It        9
+
+                      should also be well-organised.
+
+                      Page 7 of 9
+                                                 Official (Closed), Non-Sensitive
+
+ST1504 DEEP LEARNING ASSIGNMENT 2
+
+PART C: Technical Paper (10 marks)
+
+This part of the assignment is to be completed individually. This is a challenge task for
+students who wish to attempt it for higher marks.
+
+Write a technical paper in single column format on any ONE of the following topics:
+
+ CNN (computer vision, in general)
+ RNN (natural language processing, in general)
+ GAN, VAE (generative AI, in general)
+ RL (reinforcement learning, in general)
+
+In our lessons, we covered some fundamental and basic architectures for these
+topics. However, there are certainly more advanced models available beyond what
+we covered. Take this opportunity to dive deeper into such extensions.
+
+Here are some examples (but you are free to do other topics not listed here):
+
+There is a raft of advanced CNN models: ResNet, Inception, VGG. Consider focusing on one
+such interesting models to you, and explore deeper.
+
+For RNN, you may delve into how ChatGPT works, the underlying architecture, large
+language models, for example.
+
+For GAN, there are various other improvements apart from the basic DCGAN. Even VAE has
+extensions to areas like physics.
+
+For RL, we only covered DQN. How can we improve DQN? Double DQN, duelling, priority
+sampling, etc. How about other RL architectures beyond DQN?
+
+The paper should have the following components:
+
+    1. Abstract
+    2. Introduction
+    3. Related Works
+    4. Dataset/Methodology/Experiment
+    5. Discussion
+    6. Conclusions
+    7. References
+
+Submit the paper in Word or PDF format (page limit of 10 pages). If you write your
+own codes, you must submit them to support your work.
+
+NOTE: Do not just copy some advanced research paper without some proper
+understanding. It does not need to be too technical/mathematical.
+
+It is more meaningful to relate the advance topics you are exploring to
+something we dealt with in class and in CA1/CA2. Demonstrate how it
+improves upon those basic architectures that we covered.
+
+                                                  Page 8 of 9
+                                                 Official (Closed), Non-Sensitive
+
+ST1504 DEEP LEARNING ASSIGNMENT 2
+
+Do not provide a superficial review or "name-dropping" of advanced terms
+without deeper understanding.
+Evaluation criteria (total 10 marks):
+
+Component                                Description
+
+                                        Provide reviews of relevant research articles used in
+                                        relation to your technical paper. Citations of those
+Review of research articles research articles must be properly included.
+
+                                        Note: The reviews must be relevant and meaningful.
+
+Dataset                     Introduce the dataset to be used. Carry out relevant
+                            preprocessing in preparation for model building.
+
+            Models          Build an original/advance model, with some interesting
+Elaboration, evaluation of  results. Include submission of Jupyter notebook.
+
+   models, discussions      Demonstrate efficacy of model results in relation to the
+                            topic being discussed. Relate with the research articles
+Appropriate level of topic  that are reviewed earlier.
+
+                            The topic should be slightly beyond what is covered in
+                            class. However, it should be relatable to the fundamental
+                            topics covered in class. Explain how this topic relates
+                            and advances the fundamental topics covered in class.
+
+                            The topics should not be overly technical with "name-
+                            dropping" of advanced terms that does not demonstrate
+                            deeper understanding.
+
+Note: These are the five key evaluation criteria for Part C. The overall coherence of the
+technical paper will add up to a total of 10 marks, based on these five criteria.
+
+                            -- End of Assignment --
+
+                            Page 9 of 9
+

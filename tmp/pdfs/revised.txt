@@ -1,0 +1,315 @@
+Diffusion Policies for Complex Continuous Control
+
+                                 Kendrick Slamat
+                 School of Computing, Singapore Polytechnic
+                ST1504 Deep Learning, AY2026/27 Semester 1
+
+                       kendrick.25@ichat.sp.edu.sg
+
+                                   Abstract
+
+Reinforcement learning agents for continuous control must select precise, co-
+ordinated actions while responding to complex environment dynamics. Deep
+Q-Networks (DQN) operate on discrete actions, so applying them to multidimen-
+sional continuous control requires joint-action discretisation that grows rapidly
+with the number of action dimensions. This study investigates whether a diffusion
+policy can imitate continuous expert behaviour in LunarLanderContinuous-v3 more
+effectively than standard behaviour cloning and a discretised DQN baseline. The
+comparison evaluates episodic return, successful-landing rate, action smoothness,
+and inference cost under repeated evaluation seeds.
+
+1 Introduction
+
+Reinforcement Learning (RL) is a paradigm of machine learning that focuses on training agents to
+make decisions by interacting with an environment. In continuous control problems, agents learn
+policies that produce actions within an environment that attempt to maximize overall reward over
+time (Milvus, n.d.; Terven, 2025), which can be written as follows:
+
+                [  ]
+
+                
+
+                                                                                         (1)
+
+                E   ,
+
+                 =0
+
+where  is the reward received at timestep  and   [0, 1) is the discount factor that controls how
+much the agent cares about rewards later on, versus rewards right now.
+
+One approach to continuous control is to adapt the Deep Q-Network (DQN), which combines
+Q-learning with a neural network that estimates the value of each available action. DQN requires
+a finite action set, however, so each continuous action dimension must be divided into bins. For
+LunarLanderContinuous-v3, independently discretising both control dimensions into  bins creates
+2 joint actions, trading control precision for a rapidly expanding output space. Standard deterministic
+policies also produce one preferred action for each state and may average across distinct valid
+behaviours represented in demonstration data.
+
+To address these limitations, this paper explores the use of diffusion models in reinforcement learning
+for continuous control tasks. This leads to the following research question:
+
+To what extent can a diffusion policy improve imitation learning for complex continuous
+control in LunarLanderContinuous-v3, compared with standard behaviour cloning and
+a discretised DQN baseline?
+
+2 Background: Denoising Diffusion Models
+
+Diffusion models are a class of generative models that can learn to produce complex distributions
+of data, which can be used to represent the full range of valid, diverse actions in continuous action
+spaces rather than collapsing them into a single averaged answer (Chi et al., 2023).
+
+                1
+A Diffusion Model has two main components: a forward process and a reverse process. The forward
+process progressively adds gaussian noise to a sample of data until the sample becomes completely
+random noise. The reverse process is a neural network that learns to predict and remove the noise
+added at each step with a concrete training objective: predict the noise added at a random step. Instead
+of learning to generate a sample from scratch, the network learns to denoise a noisy sample. By
+replicating this process, the trained network can generate new samples from pure noise.
+
+Figure 1. A diffusion model progressively adds noise to a sample in the forward process, then learns to reverse
+          this process step by step to recover a clean sample from pure noise (Vahdat and Kreis, 2022).
+
+2.1 Forward process
+
+The forward process takes a real data sample 0 and progressively adds a small amount of Gaussian
+noise to it over  steps, until  is indistinguishable from pure random noise, as illustrated in Figure
+1. At each step, the previous sample is scaled down slightly and a small amount of noise is added:
+
+                             (                              )
+
+                              ( |  -1) = N  ; 1 -   -1,  I ,                                      (2)
+
+where  is a small, fixed noise variance that increases with each step , and N denotes a Gaussian
+distribution (Ho et al., 2020). Crucially, this forward process is fixed rather than learned:  is chosen
+ahead of time according to a schedule, and no network parameters are involved in going from 0 to  .
+It exists only to generate training pairs of a clean sample and a corresponding noisy version, which
+the reverse process is then trained to undo.
+
+2.2 Reverse process
+
+The reverse process is the part of a diffusion model that is learned. Since the exact reverse of the
+forward process, (-1 |  ), cannot be computed directly, a neural network with parameters  is
+
+trained to approximate it:
+
+                       (-1 |  ) = N (-1;  ( , ),  ( , )) ,                                        (3)
+
+where the network predicts the mean  and variance  of the slightly-less-noisy sample -1, given
+
+the current noisy sample  and the current step . Ho et al. (2020) show that this reduces to a much
+simpler solution: rather than predicting  and  directly, the network is instead trained to predict
+
+the noise  that was added to 0 to produce  , by minimising the mean squared error between the
+
+predicted and actual noise:
+
+                             L () = E0, , [ -   ( , ) 2] ,                                        (4)
+
+where   ( , ) is the network's predicted noise. At generation time, the network starts from random
+
+noise  and repeatedly applies its learned noise prediction to remove a small amount of noise at each
+
+step, until a clean sample 0 remains, as illustrated by the right-to-left direction in Figure 1.
+
+2.3 From images to actions
+
+Applying diffusion concepts to reinforcement learning requires changing both what is "diffused"
+and how it is generated. Firstly, the data sample 0 is no longer a grid of pixel values, but a vector
+representing a continuous action, or a short sequence of future actions (Chi et al., 2023). Secondly,
+the network needs to know what state it is acting in, so the current state  is fed into the network
+at every denoising step, alongside the noisy action. This turns the network into a policy  ( | ):
+starting from random noise, it is repeatedly denoised, using the state as context each time, until a
+usable action remains. Chi et al. (2023) predict a short sequence of future actions at once for smoother
+behaviour. This paper adopts short action chunks because landing requires coordinated control over
+multiple timesteps.
+
+                             2
+3 Related works
+
+3.1 Discretized and continuous-action value-based control
+
+Mnih et al. (2015) combined Q-learning with a neural network for discrete control. Applying DQN to
+LunarLanderContinuous-v3 therefore requires both action dimensions to be discretised;  bins per
+dimension produce 2 joint actions. Double DQN improves value estimates by separating action
+selection from evaluation (van Hasselt et al., 2015), but leaves this action-space bottleneck unchanged.
+DDPG avoids discretisation by learning a deterministic continuous policy (Lillicrap et al., 2015).
+Both DDPG and discretised DQN still select one action for each state, whereas a diffusion policy can
+model a distribution over valid controls.
+
+3.2 Behaviour cloning and continuous-control demonstrations
+
+Behaviour cloning (BC) learns a policy from expert state-action pairs through supervised learning. It
+is the direct baseline for the diffusion student because both models use the same SAC demonstrations
+and predict the same action chunks. A deterministic BC model produces one chunk per state and may
+average across different valid behaviours. Small errors can also move the policy into states missing
+from the training data, where later errors can compound (Ross et al., 2011; Pearce et al., 2023).
+
+Soft Actor-Critic (SAC) is an off-policy, maximum-entropy actor-critic algorithm for continuous
+actions (Haarnoja et al., 2018). Its stochastic policy can collect varied successful trajectories. In this
+study, SAC supplies the demonstrations; it is the teacher, not an imitation-learning baseline.
+
+3.3 Diffusion models for action generation
+
+Janner et al. (2022) treated planning as denoising full state-action trajectories, showing that diffusion
+can represent multimodal, long-horizon behaviour. Full-trajectory denoising is costly for online
+control, where actions must respond to a changing state. Pearce et al. (2023) applied diffusion
+directly to behaviour cloning, while Chi et al. (2023) combined DDPM-style denoising (Ho et al.,
+2020) with state conditioning and receding-horizon action chunks. This study adapts that design to
+LunarLanderContinuous-v3. The BC student isolates the effect of diffusion-based action generation,
+while the discretised DQN provides the value-based baseline.
+
+       Table 1. Summary of related research and its relevance to this study
+
+Study                 Contribution                            Relevance
+
+Mnih et al. (2015)    DQN for discrete control                Value-based baseline used after ac-
+                                                              tion discretisation
+Ross et al. (2011)    Distribution shift in imitation learn-  Explains how BC errors can com-
+                      ing                                     pound
+Haarnoja et al.       SAC for stochastic continuous control   Expert used to generate demonstra-
+(2018)                                                        tions
+Ho et al. (2020)      DDPM: iterative denoising genera-       Diffusion mechanism underlying our
+                      tive model                              policy
+Janner et al. (2022)  Trajectory-level diffusion for plan-    Shows diffusion can model long-
+                      ning                                    horizon behaviour
+Pearce et al. (2023)  Diffusion-based behaviour cloning       Connects diffusion with the BC base-
+                                                              line
+Chi et al. (2023)     State-conditioned action diffusion      Basis for the diffusion student
+
+4 Dataset, methodology and experiment
+
+4.1 Dataset or environment
+[State the source, size, input and target format, class distribution or state and action spaces, data
+split, and limitations. Explain why it fits the research question.]
+
+                                            3
+[Replace this box with representative dataset samples, an environment screenshot,
+                                    or a model diagram.]
+
+Figure 2. Overview of the dataset or experimental environment. State the key observation in the caption.
+
+4.2 Preprocessing
+
+[Describe and justify normalisation, resizing, augmentation, tokenisation, data splitting, state scaling,
+action discretisation, or replay buffer construction, depending on the topic.]
+
+4.3 Baseline model
+
+[Describe the fundamental architecture covered in class. Include layers or components, activations,
+objective or reward, optimiser, and major hyperparameters.]
+
+4.4 Advanced model
+
+The proposed Diffusion Policy modifies the baseline by [state the exact architectural or algorithmic
+change]. A generic objective is
+
+                                          
+
+                    L () =             1                                           (5)
+                                              (  (), ) ,
+
+                                          =1
+
+where [define every symbol and replace this equation with one that is actually relevant to your model].
+
+4.5 Experimental setup and evaluation
+
+Table 2. Experimental configuration used for the controlled comparison.
+
+Setting                                   Value
+
+Framework                                 TensorFlow/Keras or PyTorch
+Hardware                                  [GPU, CPU, or cloud platform]
+Random seeds                              [Values and number of trials]
+Batch size                                [Value]
+Learning rate                             [Value]
+Optimiser                                 [Value]
+Epochs or episodes                        [Value]
+Model-selection rule                      [Validation criterion]
+
+[Define the evaluation metrics and explain why they answer the research question. Use repeated
+trials where randomness materially changes results.]
+
+5 Discussion
+
+[State the result precisely before interpreting it. Report absolute values, differences, uncertainty
+across runs, and any trade-offs.]
+
+                                            4
+           [Replace with learning curves, generated samples, a confusion matrix, attention
+                         maps, reconstruction comparisons, or RL return curves.]
+
+             Figure 3. Main quantitative or qualitative result. Explain the trend and the key takeaway.
+
+[Interpret why the result occurred. Connect the evidence to the research articles reviewed earlier.
+Discuss agreements, disagreements, failure cases, stability, computational cost, and practical
+significance.]
+
+5.1 Connection to material covered in class
+[Identify which fundamental mechanism remains unchanged and which component is advanced.
+Explain the development in plain language as well as technical terms.]
+
+5.2 Limitations
+[State concrete limitations such as dataset size, compute, restricted hyperparameter search, too few
+random seeds, metric weaknesses, or limited generalisation.]
+
+6 Conclusions
+
+[Answer the research question directly. Summarise the baseline, advanced model, central result,
+likely mechanism, and one restrained implication. Do not introduce new evidence.]
+
+References
+
+Cheng Chi, Zhenjia Xu, Siyuan Feng, Eric Cousineau, Yilun Du, Benjamin Burchfiel, Russ Tedrake, and Shuran
+   Song. Diffusion policy: Visuomotor policy learning via action diffusion. arXiv preprint arXiv:2303.04137,
+   2023. URL https://arxiv.org/pdf/2303.04137.
+
+Tuomas Haarnoja, Aurick Zhou, Pieter Abbeel, and Sergey Levine. Soft actor-critic: Off-policy maximum entropy
+   deep reinforcement learning with a stochastic actor. In Proceedings of the 35th International Conference on
+   Machine Learning, volume 80, pages 1861­1870. PMLR, 2018. URL https://proceedings.mlr.press/
+   v80/haarnoja18b.html.
+
+Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising diffusion probabilistic models. arXiv preprint
+   arXiv:2006.11239, 2020. URL https://arxiv.org/pdf/2006.11239.
+
+Michael Janner, Yilun Du, Joshua B. Tenenbaum, and Sergey Levine. Planning with diffusion for flexible
+   behavior synthesis. arXiv preprint arXiv:2205.09991, 2022. URL https://arxiv.org/abs/2205.09991.
+
+Timothy P. Lillicrap, Jonathan J. Hunt, Alexander Pritzel, Nicolas Heess, Tom Erez, Yuval Tassa, David Silver,
+   and Daan Wierstra. Continuous control with deep reinforcement learning. arXiv preprint arXiv:1509.02971,
+   2015. URL https://arxiv.org/abs/1509.02971.
+
+Milvus. How does RL apply to continuous control problems?, n.d. URL https://blog.milvus.io/
+   ai-quick-reference/how-does-rl-apply-to-continuous-control-problems. Accessed: 2026-
+   07-17.
+
+Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei A. Rusu, Joel Veness, Marc G. Bellemare, Alex
+   Graves, Martin Riedmiller, Andreas K. Fidjeland, Georg Ostrovski, Stig Petersen, Charles Beattie, Amir
+   Sadik, Ioannis Antonoglou, Helen King, Dharshan Kumaran, Daan Wierstra, Shane Legg, and Demis
+
+                                                           5
+   Hassabis. Human-level control through deep reinforcement learning. Nature, 518(7540):529­533, 2015. doi:
+   10.1038/nature14236. URL https://www.nature.com/articles/nature14236.
+Tim Pearce, Tabish Rashid, Anssi Kanervisto, Dave Bignell, Mingfei Sun, Raluca Georgescu, Sergio Valcarcel
+   Macua, Shan Zheng Tan, Ida Momennejad, Katja Hofmann, and Sam Devlin. Imitating human behaviour with
+   diffusion models. arXiv preprint arXiv:2301.10677, 2023. URL https://arxiv.org/abs/2301.10677.
+Stéphane Ross, Geoffrey J. Gordon, and J. Andrew Bagnell. A reduction of imitation learning and structured
+   prediction to no-regret online learning. In Proceedings of the Fourteenth International Conference on Artificial
+   Intelligence and Statistics, volume 15, pages 627­635. PMLR, 2011. URL https://proceedings.mlr.
+   press/v15/ross11a.html.
+Juan Terven. Deep reinforcement learning: A chronological overview and methods. AI, 6(3):46, 2025. doi:
+   10.3390/ai6030046. URL https://www.mdpi.com/2673-2688/6/3/46.
+Arash Vahdat and Karsten Kreis. Improving diffusion models as an alternative to GANs,
+   part 2. NVIDIA Technical Blog, 2022. URL https://developer.nvidia.com/blog/
+   improving-diffusion-models-as-an-alternative-to-gans-part-2/. Accessed: 2026-07-20.
+Hado van Hasselt, Arthur Guez, and David Silver. Deep reinforcement learning with double Q-learning. arXiv
+   preprint arXiv:1509.06461, 2015. URL https://arxiv.org/abs/1509.06461.
+
+A Additional experimental details
+
+[Optional secondary plots, full hyperparameter settings, model summaries, or implementation details.
+Essential evidence belongs in the main paper.]
+
+                                                           6
+
