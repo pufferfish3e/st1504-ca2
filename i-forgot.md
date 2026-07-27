@@ -14,9 +14,10 @@ This refresher covers the working CA2 notebooks only. Paper-related material is 
 | `gan_baseline.ipynb` | Conditional DCGAN baseline | Partially executed; a saved `KeyboardInterrupt` remains |
 | `gan_improvement.ipynb` | GAN experiments and final model | Code is present but unexecuted |
 | `vae_gan_comparison.ipynb` | Final CVAE-versus-GAN comparison | Code is present but unexecuted |
-| `rl_baseline.ipynb` | DQN baseline for Pendulum gravity variants | Code is present but unexecuted |
+| `rl_baseline.ipynb` | DQN baseline for Pendulum gravity variants | Fully executed; results written up |
+| `rl_improvement.ipynb` | DQN variants and final model | Code is present but unexecuted |
 
-The VAE path is currently the most complete. The GAN improvement, cross-model comparison, and RL baseline still need clean execution before their results can be treated as final.
+The VAE and RL baseline paths are the most complete. The GAN improvement, cross-model comparison, and RL improvement still need clean execution before their results can be treated as final.
 
 ## Overall Workflow
 
@@ -30,7 +31,7 @@ The VAE path is currently the most complete. The GAN improvement, cross-model co
 ### Part B — Reinforcement Learning
 
 1. Run `rl_baseline.ipynb` across all required gravity settings.
-2. Use its saved artifacts and improvement hypotheses as the handoff for the later RL improvement work.
+2. Run `rl_improvement.ipynb`, which reads `rl_baseline_results.json` instead of retraining the baseline.
 
 ## `vae_gan_eda.ipynb` — Shared CIFAR-10 EDA
 
@@ -251,12 +252,46 @@ The notebook contains code but has not been executed. Its current quantitative h
     - Save baseline artifacts
 11. References
 
-The notebook has a complete written and code structure but no saved executions. Run it before writing result claims or choosing the improvement configuration.
+Fully executed. Results are written up in Sections 10.1 and 10.2: DQN beat both non-learning references in all four gravity settings, and supergravity was the weak point (mean -268.80, seed-to-seed std 6.02 against 0.36-0.60 elsewhere).
+
+## `rl_improvement.ipynb` — DQN Variants and Final Model
+
+1. Imports and Setup
+2. Load Baseline Results
+   - Baseline summary
+   - Hypotheses carried over from the baseline
+3. Comparison Metrics and Decision Rule
+   - Primary metric: mean final-evaluation return
+   - Secondary metric: seed-to-seed standard deviation
+   - Decision rule, fixed before any results exist
+4. Shared Implementation
+   - Configuration with `double` / `dueling` / `action_dim` flags
+   - Q-network with an optional dueling head
+   - Replay buffer
+   - Agent with an optional double-DQN target
+   - Evaluation (adds saturation rate and start-state value prediction)
+   - Training loop
+5. Experiment 1: Double DQN
+6. Experiment 2: Dueling DQN
+7. Experiment 3: Double Dueling DQN
+8. Experiment 4: Finer Torque Discretization (9 bins, on vanilla DQN)
+9. Diagnostic Analysis
+   - Torque saturation
+   - Q-value overestimation gap
+   - Per-seed return spread under supergravity
+10. Final Model
+    - Apply the decision rule
+    - Retrain the winner on all 5 seeds
+    - Save final weights
+11. Ablation Summary
+12. Conclusion
+
+Key decisions: Rainbow was rejected as out of scope for a 3-dim state / 5-bin action task. Experiments use 3 training seeds; only the final model uses all 5. The discretization experiment runs on vanilla DQN so any gain is attributable to the action space rather than the algorithm. The cross-gravity transfer check already lives in the baseline (Section 9.2) and is not repeated. Code is present but unexecuted; Section 12 needs writing after the run.
 
 ## Immediate Next Steps
 
 1. Cleanly rerun `gan_baseline.ipynb` and remove the interrupted saved state.
 2. Execute `gan_improvement.ipynb`.
 3. Align `vae_gan_comparison.ipynb` with the VAE's NMI-based metric structure, then execute it.
-4. Execute `rl_baseline.ipynb` across the four gravity configurations.
+4. Execute `rl_improvement.ipynb`, then write Section 12 from its results.
 5. Only after those runs, update conclusions and final comparison claims from the produced results.
