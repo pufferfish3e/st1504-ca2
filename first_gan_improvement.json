@@ -1,1 +1,72 @@
-{"quality_score":{"baseline":0.22,"experiment_1_ttur":null,"experiment_2_labelsmoothing":null,"experiment_3_spectralnorm":null,"experiment_4_greyscale":null,"experiment_5_engineered_conditioning":null,"experiment_6_augmentation":null,"experiment_7_acgan":null,"experiment_8_deeper_architecture":null,"experiment_9_alternating_downsample_and_upsample_layers":null,"experiment_10_residual_connections":null,"final_model":0.2},"final_val_g_loss":{"baseline":0.9086659551,"experiment_1_ttur":0.6916692257,"experiment_2_labelsmoothing":0.9746448398,"experiment_3_spectralnorm":0.6952149272,"experiment_4_greyscale":0.742639184,"experiment_5_engineered_conditioning":0.8540427685,"experiment_6_augmentation":1.0657856464,"experiment_7_acgan":0.8955398202,"experiment_8_deeper_architecture":0.8632132411,"experiment_9_alternating_downsample_and_upsample_layers":1.0728965998,"experiment_10_residual_connections":1.0654668808,"final_model":0.9796333313},"final_val_real_d_loss":{"baseline":0.5462014675,"experiment_1_ttur":0.6917331219,"experiment_2_labelsmoothing":0.5694327354,"experiment_3_spectralnorm":0.6951619387,"experiment_4_greyscale":0.5069670677,"experiment_5_engineered_conditioning":0.5736558437,"experiment_6_augmentation":0.6376355886,"experiment_7_acgan":1.6539227962,"experiment_8_deeper_architecture":0.5687919259,"experiment_9_alternating_downsample_and_upsample_layers":0.617561698,"experiment_10_residual_connections":0.4578688443,"final_model":0.6521527767},"final_val_fake_d_loss":{"baseline":0.5524361134,"experiment_1_ttur":0.6946613789,"experiment_2_labelsmoothing":0.5182564855,"experiment_3_spectralnorm":0.6911132336,"experiment_4_greyscale":0.6790242195,"experiment_5_engineered_conditioning":0.5959889889,"experiment_6_augmentation":0.4688309729,"experiment_7_acgan":0.5618150234,"experiment_8_deeper_architecture":0.643778801,"experiment_9_alternating_downsample_and_upsample_layers":0.4853662252,"experiment_10_residual_connections":0.5403559208,"final_model":0.5038666725},"fid_score":{"baseline":121.3980789185,"experiment_1_ttur":277.4886474609,"experiment_2_labelsmoothing":118.233215332,"experiment_3_spectralnorm":204.6112060547,"experiment_4_greyscale":102.8147888184,"experiment_5_engineered_conditioning":119.9305725098,"experiment_6_augmentation":117.394493103,"experiment_7_acgan":120.6110534668,"experiment_8_deeper_architecture":142.0719451904,"experiment_9_alternating_downsample_and_upsample_layers":157.7178955078,"experiment_10_residual_connections":141.7073364258,"final_model":126.7595748901}}
+{
+    "quality_score": {
+        "baseline": 0.22,
+        "experiment_1_ttur": null,
+        "experiment_2_labelsmoothing": null,
+        "experiment_3_spectralnorm": null,
+        "experiment_4_greyscale": null,
+        "experiment_5_engineered_conditioning": null,
+        "experiment_6_augmentation": null,
+        "experiment_7_acgan": null,
+        "experiment_8_deeper_architecture": null,
+        "experiment_9_alternating_downsample_and_upsample_layers": null,
+        "experiment_10_residual_connections": null,
+        "final_model": 0.2
+    },
+    "final_val_g_loss": {
+        "baseline": 0.9086659551,
+        "experiment_1_ttur": 0.6916692257,
+        "experiment_2_labelsmoothing": 0.9746448398,
+        "experiment_3_spectralnorm": 0.6952149272,
+        "experiment_4_greyscale": 0.742639184,
+        "experiment_5_engineered_conditioning": 0.8540427685,
+        "experiment_6_augmentation": 1.0657856464,
+        "experiment_7_acgan": 0.8955398202,
+        "experiment_8_deeper_architecture": 0.8632132411,
+        "experiment_9_alternating_downsample_and_upsample_layers": 1.0728965998,
+        "experiment_10_residual_connections": 1.0654668808,
+        "final_model": 0.9796333313
+    },
+    "final_val_real_d_loss": {
+        "baseline": 0.5462014675,
+        "experiment_1_ttur": 0.6917331219,
+        "experiment_2_labelsmoothing": 0.5694327354,
+        "experiment_3_spectralnorm": 0.6951619387,
+        "experiment_4_greyscale": 0.5069670677,
+        "experiment_5_engineered_conditioning": 0.5736558437,
+        "experiment_6_augmentation": 0.6376355886,
+        "experiment_7_acgan": 1.6539227962,
+        "experiment_8_deeper_architecture": 0.5687919259,
+        "experiment_9_alternating_downsample_and_upsample_layers": 0.617561698,
+        "experiment_10_residual_connections": 0.4578688443,
+        "final_model": 0.6521527767
+    },
+    "final_val_fake_d_loss": {
+        "baseline": 0.5524361134,
+        "experiment_1_ttur": 0.6946613789,
+        "experiment_2_labelsmoothing": 0.5182564855,
+        "experiment_3_spectralnorm": 0.6911132336,
+        "experiment_4_greyscale": 0.6790242195,
+        "experiment_5_engineered_conditioning": 0.5959889889,
+        "experiment_6_augmentation": 0.4688309729,
+        "experiment_7_acgan": 0.5618150234,
+        "experiment_8_deeper_architecture": 0.643778801,
+        "experiment_9_alternating_downsample_and_upsample_layers": 0.4853662252,
+        "experiment_10_residual_connections": 0.5403559208,
+        "final_model": 0.5038666725
+    },
+    "fid_score": {
+        "baseline": 121.3980789185,
+        "experiment_1_ttur": 277.4886474609,
+        "experiment_2_labelsmoothing": 118.233215332,
+        "experiment_3_spectralnorm": 204.6112060547,
+        "experiment_4_greyscale": 102.8147888184,
+        "experiment_5_engineered_conditioning": 119.9305725098,
+        "experiment_6_augmentation": 117.394493103,
+        "experiment_7_acgan": 120.6110534668,
+        "experiment_8_deeper_architecture": 142.0719451904,
+        "experiment_9_alternating_downsample_and_upsample_layers": 157.7178955078,
+        "experiment_10_residual_connections": 141.7073364258,
+        "final_model": 126.7595748901
+    }
+}
