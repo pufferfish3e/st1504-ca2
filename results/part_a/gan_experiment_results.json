@@ -1,0 +1,69 @@
+{
+  "baseline": {
+    "quality_score": 0.22,
+    "final_val_g_loss": 0.908666,
+    "final_val_fake_d_loss": 0.552436,
+    "final_val_real_d_loss": 0.546201,
+    "fid_score": 121.398079
+  },
+  "experiment_1_ttur": {
+    "final_val_g_loss": 0.691669,
+    "final_val_fake_d_loss": 0.694661,
+    "final_val_real_d_loss": 0.691733,
+    "fid_score": 277.489
+  },
+  "experiment_2_labelsmoothing": {
+    "final_val_g_loss": 0.974645,
+    "final_val_fake_d_loss": 0.518256,
+    "final_val_real_d_loss": 0.569433,
+    "fid_score": 118.233
+  },
+  "experiment_3_spectralnorm": {
+    "final_val_g_loss": 0.695215,
+    "final_val_fake_d_loss": 0.691113,
+    "final_val_real_d_loss": 0.695162,
+    "fid_score": 204.611
+  },
+  "experiment_4_greyscale": {
+    "final_val_g_loss": 0.742639,
+    "final_val_fake_d_loss": 0.679024,
+    "final_val_real_d_loss": 0.506967,
+    "fid_score": 102.815
+  },
+  "experiment_5_engineered_conditioning": {
+    "final_val_g_loss": 0.854043,
+    "final_val_fake_d_loss": 0.595989,
+    "final_val_real_d_loss": 0.573656,
+    "fid_score": 119.931
+  },
+  "experiment_6_augmentation": {
+    "final_val_g_loss": 1.065786,
+    "final_val_fake_d_loss": 0.468831,
+    "final_val_real_d_loss": 0.637636,
+    "fid_score": 117.394
+  },
+  "experiment_7_acgan": {
+    "final_val_g_loss": 0.895540,
+    "final_val_fake_d_loss": 0.561815,
+    "final_val_real_d_loss": 1.653923,
+    "fid_score": 120.611
+  },
+  "experiment_8_deeper_architecture": {
+    "final_val_g_loss": 0.863213,
+    "final_val_fake_d_loss": 0.643779,
+    "final_val_real_d_loss": 0.568792,
+    "fid_score": 142.072
+  },
+  "experiment_9_alternating_downsample_and_upsample_layers": {
+    "final_val_g_loss": 1.072897,
+    "final_val_fake_d_loss": 0.485366,
+    "final_val_real_d_loss": 0.617562,
+    "fid_score": 157.718
+  },
+  "experiment_10_residual_connections": {
+    "final_val_g_loss": 1.065467,
+    "final_val_fake_d_loss": 0.540356,
+    "final_val_real_d_loss": 0.457869,
+    "fid_score": 141.707
+  }
+}

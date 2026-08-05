@@ -1,0 +1,14 @@
+{
+  "noise_dim": 128,
+  "batch_size": 128,
+  "num_epochs": 50,
+  "generator_lr": 0.0002,
+  "discriminator_lr": 0.0002,
+  "final_train_g_loss": 1.1258151531219482,
+  "final_val_g_loss": 0.8604325652122498,
+  "final_train_real_d_loss": 0.49912092089653015,
+  "final_val_real_d_loss": 0.5092617869377136,
+  "final_train_fake_d_loss": 0.691100537776947,
+  "final_val_fake_d_loss": 0.5971750020980835,
+  "fid_score": 120.6777572631836
+}

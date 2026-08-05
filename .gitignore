@@ -33,5 +33,4 @@ cifar-10-*/
 # Trained model weights and checkpoints
 *.pth
 *.ckpt
-*.h5
 *.keras

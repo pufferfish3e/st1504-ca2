@@ -1,0 +1,374 @@
+{
+  "schema_version": 1,
+  "profile": "full",
+  "results": {
+    "baseline": {
+      "default": {
+        "mean": -164.24330377845584,
+        "median": -164.29276581497666,
+        "std": 0.35832638808919065,
+        "n": 5
+      },
+      "free_fall": {
+        "mean": -68.0869894114916,
+        "median": -67.93133096351306,
+        "std": 0.5988073331329777,
+        "n": 5
+      },
+      "anti_gravity": {
+        "mean": -79.89380338606443,
+        "median": -79.9435718155548,
+        "std": 0.3820443553111303,
+        "n": 5
+      },
+      "supergravity": {
+        "mean": -268.8042713250754,
+        "median": -272.4823118656547,
+        "std": 6.02308565982593,
+        "n": 5
+      }
+    },
+    "vanilla": {
+      "default": {
+        "mean": -163.82472721841165,
+        "median": -164.20396946448088,
+        "std": 0.8756082404042954,
+        "n": 3
+      },
+      "free_fall": {
+        "mean": -68.30950539005752,
+        "median": -68.09366052842367,
+        "std": 0.7069230533230964,
+        "n": 3
+      },
+      "anti_gravity": {
+        "mean": -79.91220091399563,
+        "median": -79.9435718155548,
+        "std": 0.37127876212103944,
+        "n": 3
+      },
+      "supergravity": {
+        "mean": -269.63254775500974,
+        "median": -272.4823118656547,
+        "std": 5.939233943858618,
+        "n": 3
+      }
+    },
+    "double": {
+      "default": {
+        "mean": -164.16818197968004,
+        "median": -164.7548613327475,
+        "std": 1.4953354754807757,
+        "n": 3
+      },
+      "free_fall": {
+        "mean": -69.37317267046332,
+        "median": -68.10999599192208,
+        "std": 2.542548127333301,
+        "n": 3
+      },
+      "anti_gravity": {
+        "mean": -79.79687527077972,
+        "median": -79.67841126700671,
+        "std": 0.34770225005416605,
+        "n": 3
+      },
+      "supergravity": {
+        "mean": -259.92701971075553,
+        "median": -259.93432428961205,
+        "std": 0.08222916657062307,
+        "n": 3
+      }
+    },
+    "dueling": {
+      "default": {
+        "mean": -164.22552315432154,
+        "median": -164.14765892644348,
+        "std": 0.21614107380342798,
+        "n": 3
+      },
+      "free_fall": {
+        "mean": -67.85382416357177,
+        "median": -67.99476013801714,
+        "std": 0.33656452659187097,
+        "n": 3
+      },
+      "anti_gravity": {
+        "mean": -79.76019469779268,
+        "median": -79.74116519554073,
+        "std": 0.12262092078215397,
+        "n": 3
+      },
+      "supergravity": {
+        "mean": -268.6050087326411,
+        "median": -264.1421930020095,
+        "std": 9.09624594998446,
+        "n": 3
+      }
+    },
+    "double_dueling": {
+      "default": {
+        "mean": -164.90531482569384,
+        "median": -164.3391214029677,
+        "std": 1.0150232727230704,
+        "n": 3
+      },
+      "free_fall": {
+        "mean": -68.90512114147582,
+        "median": -68.64514966092405,
+        "std": 1.0932009589084188,
+        "n": 3
+      },
+      "anti_gravity": {
+        "mean": -79.72232858999435,
+        "median": -79.72724315789459,
+        "std": 0.04421148368295471,
+        "n": 3
+      },
+      "supergravity": {
+        "mean": -268.7914555605183,
+        "median": -272.4566370763554,
+        "std": 6.370110637144272,
+        "n": 3
+      }
+    },
+    "fine_bins": {
+      "default": {
+        "mean": -164.3642156964306,
+        "median": -164.86136519834412,
+        "std": 0.9465264561238135,
+        "n": 3
+      },
+      "free_fall": {
+        "mean": -69.16760972149869,
+        "median": -69.15015443028125,
+        "std": 0.5317618090825689,
+        "n": 3
+      },
+      "anti_gravity": {
+        "mean": -80.35578257083273,
+        "median": -80.21923999584975,
+        "std": 0.30559222478779785,
+        "n": 3
+      },
+      "supergravity": {
+        "mean": -266.897872361226,
+        "median": -264.68925731722777,
+        "std": 5.106598282312208,
+        "n": 3
+      }
+    },
+    "final": {
+      "default": {
+        "mean": -164.09438868603394,
+        "median": -164.29276581497666,
+        "std": 0.7354804944635026,
+        "n": 5
+      },
+      "free_fall": {
+        "mean": -67.86253745076681,
+        "median": -67.99476013801714,
+        "std": 0.2678142752947636,
+        "n": 5
+      },
+      "anti_gravity": {
+        "mean": -79.79565609678885,
+        "median": -79.76387744829975,
+        "std": 0.10751159541875846,
+        "n": 5
+      },
+      "supergravity": {
+        "mean": -260.47178537395695,
+        "median": -260.00535289675247,
+        "std": 0.8198752097640559,
+        "n": 5
+      }
+    }
+  },
+  "selected_variant": {
+    "default": "vanilla",
+    "free_fall": "dueling",
+    "anti_gravity": "double_dueling",
+    "supergravity": "double"
+  },
+  "saturation": {
+    "double": {
+      "anti_gravity": 0.16733333333333333,
+      "default": 0.13183333333333333,
+      "free_fall": 0.2675,
+      "supergravity": 0.25383333333333336
+    },
+    "double_dueling": {
+      "anti_gravity": 0.17333333333333334,
+      "default": 0.4623333333333333,
+      "free_fall": 0.08999999999999998,
+      "supergravity": 0.44816666666666666
+    },
+    "dueling": {
+      "anti_gravity": 0.16399999999999998,
+      "default": 0.24666666666666667,
+      "free_fall": 0.18700000000000003,
+      "supergravity": 0.4755
+    },
+    "fine_bins": {
+      "anti_gravity": 0.1485,
+      "default": 0.11866666666666666,
+      "free_fall": 0.16216666666666665,
+      "supergravity": 0.2035
+    },
+    "vanilla": {
+      "anti_gravity": 0.1675,
+      "default": 0.13266666666666668,
+      "free_fall": 0.1691666666666667,
+      "supergravity": 0.24183333333333332
+    }
+  },
+  "overestimation": [
+    {
+      "variant": "vanilla",
+      "gravity": "default",
+      "predicted": -153.14264631271362,
+      "actual": -140.05126389222195,
+      "gap": -13.091382420491664
+    },
+    {
+      "variant": "vanilla",
+      "gravity": "free_fall",
+      "predicted": -59.74233513275782,
+      "actual": -63.056955725660345,
+      "gap": 3.3146205929025307
+    },
+    {
+      "variant": "vanilla",
+      "gravity": "anti_gravity",
+      "predicted": -73.33751706779003,
+      "actual": -72.20493122348537,
+      "gap": -1.1325858443046546
+    },
+    {
+      "variant": "vanilla",
+      "gravity": "supergravity",
+      "predicted": -238.94106953938802,
+      "actual": -225.1904056197527,
+      "gap": -13.750663919635267
+    },
+    {
+      "variant": "double",
+      "gravity": "default",
+      "predicted": -152.73980567057927,
+      "actual": -140.8502304745848,
+      "gap": -11.889575195994476
+    },
+    {
+      "variant": "double",
+      "gravity": "free_fall",
+      "predicted": -63.4788338581721,
+      "actual": -63.87617242698054,
+      "gap": 0.39733856880844126
+    },
+    {
+      "variant": "double",
+      "gravity": "anti_gravity",
+      "predicted": -74.55528601209322,
+      "actual": -72.24828785054721,
+      "gap": -2.306998161546035
+    },
+    {
+      "variant": "double",
+      "gravity": "supergravity",
+      "predicted": -257.38743998209634,
+      "actual": -220.7620528185269,
+      "gap": -36.62538716356948
+    },
+    {
+      "variant": "dueling",
+      "gravity": "default",
+      "predicted": -154.01337502797443,
+      "actual": -139.68430348904522,
+      "gap": -14.32907153892921
+    },
+    {
+      "variant": "dueling",
+      "gravity": "free_fall",
+      "predicted": -59.96434242675702,
+      "actual": -62.77471909650529,
+      "gap": 2.810376669748256
+    },
+    {
+      "variant": "dueling",
+      "gravity": "anti_gravity",
+      "predicted": -72.6042085920771,
+      "actual": -72.04558784729726,
+      "gap": -0.5586207447798335
+    },
+    {
+      "variant": "dueling",
+      "gravity": "supergravity",
+      "predicted": -249.92597935994465,
+      "actual": -224.84949681741497,
+      "gap": -25.076482542529675
+    },
+    {
+      "variant": "double_dueling",
+      "gravity": "default",
+      "predicted": -147.53039002418518,
+      "actual": -140.33122452380692,
+      "gap": -7.199165500378266
+    },
+    {
+      "variant": "double_dueling",
+      "gravity": "free_fall",
+      "predicted": -63.079109861453375,
+      "actual": -63.82854830605848,
+      "gap": 0.7494384446051127
+    },
+    {
+      "variant": "double_dueling",
+      "gravity": "anti_gravity",
+      "predicted": -72.25301300287246,
+      "actual": -72.20136655365978,
+      "gap": -0.051646449212676
+    },
+    {
+      "variant": "double_dueling",
+      "gravity": "supergravity",
+      "predicted": -268.9305493672689,
+      "actual": -225.42728155714218,
+      "gap": -43.50326781012666
+    },
+    {
+      "variant": "fine_bins",
+      "gravity": "default",
+      "predicted": -149.39443831443788,
+      "actual": -140.2451178450627,
+      "gap": -9.149320469375144
+    },
+    {
+      "variant": "fine_bins",
+      "gravity": "free_fall",
+      "predicted": -60.42920817534129,
+      "actual": -63.793978174249595,
+      "gap": 3.3647699989083
+    },
+    {
+      "variant": "fine_bins",
+      "gravity": "anti_gravity",
+      "predicted": -71.44268174072107,
+      "actual": -72.4348160187778,
+      "gap": 0.9921342780567248
+    },
+    {
+      "variant": "fine_bins",
+      "gravity": "supergravity",
+      "predicted": -254.595334370931,
+      "actual": -225.6236043058965,
+      "gap": -28.971730065034464
+    }
+  ],
+  "final_artifacts": {
+    "default": "C:\\Users\\kandy\\Projects\\playground (py)\\dele\\model_checkpoints\\rl_final_best_default.h5",
+    "free_fall": "C:\\Users\\kandy\\Projects\\playground (py)\\dele\\model_checkpoints\\rl_final_best_free_fall.h5",
+    "anti_gravity": "C:\\Users\\kandy\\Projects\\playground (py)\\dele\\model_checkpoints\\rl_final_best_anti_gravity.h5",
+    "supergravity": "C:\\Users\\kandy\\Projects\\playground (py)\\dele\\model_checkpoints\\rl_final_best_supergravity.h5"
+  }
+}
