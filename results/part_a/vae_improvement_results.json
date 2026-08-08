@@ -1,0 +1,72 @@
+{
+  "selected_experiment": "exp6_data_augmentation",
+  "final_settings": {
+    "latent_dim": 128,
+    "kl_weight": 1.0,
+    "architecture": "baseline",
+    "conditioning": "baseline",
+    "augmentation": true
+  },
+  "results": {
+    "baseline": {
+      "nmi_score": 0.10726799192039868,
+      "val_loss": 1820.26416015625,
+      "fid": 180.08546447753906
+    },
+    "exp1_latent_dim_64": {
+      "nmi_score": 0.1373520636953559,
+      "val_loss": 1818.485107421875,
+      "fid": null
+    },
+    "exp1_latent_dim_256": {
+      "nmi_score": 0.10849937706202814,
+      "val_loss": 1818.719482421875,
+      "fid": null
+    },
+    "exp1_latent_dim_512": {
+      "nmi_score": 0.08711288138232415,
+      "val_loss": 1819.9193115234375,
+      "fid": null
+    },
+    "exp2_kl_weight_0.1": {
+      "nmi_score": 0.04706562782524891,
+      "val_loss": 1743.0035400390625,
+      "fid": null
+    },
+    "exp2_kl_weight_0.3": {
+      "nmi_score": 0.08417362791516685,
+      "val_loss": 1769.8817138671875,
+      "fid": null
+    },
+    "exp2_kl_weight_0.5": {
+      "nmi_score": 0.09859949184174467,
+      "val_loss": 1788.606689453125,
+      "fid": null
+    },
+    "exp3_deeper_architecture": {
+      "nmi_score": 0.11891878308169225,
+      "val_loss": 1816.9102783203125,
+      "fid": null
+    },
+    "exp4_grayscale": {
+      "nmi_score": 0.052623501030433194,
+      "val_loss": 632.5761108398438,
+      "fid": null
+    },
+    "exp5_engineered_conditioning": {
+      "nmi_score": 0.1402430241331486,
+      "val_loss": 1818.6839599609375,
+      "fid": null
+    },
+    "exp6_data_augmentation": {
+      "nmi_score": 0.14120209754771557,
+      "val_loss": 1817.1868896484375,
+      "fid": null
+    },
+    "final_model": {
+      "nmi_score": 0.11934891724609141,
+      "val_loss": 1816.97412109375,
+      "fid": 184.50868225097656
+    }
+  }
+}
