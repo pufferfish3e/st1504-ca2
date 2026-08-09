@@ -43,7 +43,7 @@
     "fid_score": 117.394
   },
   "experiment_7_acgan": {
-    "final_val_g_loss": 0.895540,
+    "final_val_g_loss": 0.89554,
     "final_val_fake_d_loss": 0.561815,
     "final_val_real_d_loss": 1.653923,
     "fid_score": 120.611
@@ -65,5 +65,12 @@
     "final_val_fake_d_loss": 0.540356,
     "final_val_real_d_loss": 0.457869,
     "fid_score": 141.707
+  },
+  "final_model": {
+    "quality_score": 0.225,
+    "final_val_g_loss": 1.011569,
+    "final_val_fake_d_loss": 0.485925,
+    "final_val_real_d_loss": 0.599676,
+    "fid_score": 121.46019
   }
 }
