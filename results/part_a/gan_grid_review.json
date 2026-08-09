@@ -1,0 +1,187 @@
+{
+  "protocol": {
+    "images_per_class": 5,
+    "classes": 10,
+    "images_per_model": 50,
+    "source": "results/part_a/sample_grids/*.png (the fixed-noise 5x10 grid each run produced)",
+    "note": "Separate from the manual quality score in Section 3.1, which was recorded over 10 images per class for the baseline and final model only. This review covers all 12 models on one protocol and identical latents within the experiment set, so the columns are not interchangeable.",
+    "review": "Grids were reviewed with the model identity hidden and presented in randomised order."
+  },
+  "rubric": {
+    "clear": 1.0,
+    "marginal": 0.5,
+    "not_recognizable": 0.0
+  },
+  "classes": [
+    "airplane",
+    "car",
+    "bird",
+    "cat",
+    "deer",
+    "dog",
+    "frog",
+    "horse",
+    "ship",
+    "truck"
+  ],
+  "per_class": {
+    "baseline": [
+      0.3,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.1,
+      0.2,
+      0.5,
+      0.2
+    ],
+    "experiment_1_ttur": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "experiment_2_labelsmoothing": [
+      0.2,
+      0.2,
+      0.2,
+      0.3,
+      0.3,
+      0.3,
+      0.1,
+      0.4,
+      0.4,
+      0.2
+    ],
+    "experiment_3_spectralnorm": [
+      0.3,
+      0.1,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.3,
+      0.1
+    ],
+    "experiment_4_greyscale": [
+      0.1,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.1,
+      0.2,
+      0.2,
+      0.2
+    ],
+    "experiment_5_engineered_conditioning": [
+      0.4,
+      0.2,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.3,
+      0.2
+    ],
+    "experiment_6_augmentation": [
+      0.4,
+      0.3,
+      0.3,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.4,
+      0.3
+    ],
+    "experiment_7_acgan": [
+      0.5,
+      0.6,
+      0.4,
+      0.4,
+      0.5,
+      0.4,
+      0.4,
+      0.5,
+      0.6,
+      0.5
+    ],
+    "experiment_8_deeper_architecture": [
+      0.3,
+      0.4,
+      0.2,
+      0.2,
+      0.0,
+      0.2,
+      0.2,
+      0.3,
+      0.4,
+      0.4
+    ],
+    "experiment_9_alternating_downsample_and_upsample_layers": [
+      0.1,
+      0.0,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.1,
+      0.1
+    ],
+    "experiment_10_residual_connections": [
+      0.1,
+      0.3,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.1,
+      0.3
+    ],
+    "final_model": [
+      0.3,
+      0.2,
+      0.3,
+      0.3,
+      0.3,
+      0.3,
+      0.3,
+      0.3,
+      0.4,
+      0.2
+    ]
+  },
+  "overall": {
+    "baseline": 0.23,
+    "experiment_1_ttur": 0.0,
+    "experiment_2_labelsmoothing": 0.26,
+    "experiment_3_spectralnorm": 0.08,
+    "experiment_4_greyscale": 0.18,
+    "experiment_5_engineered_conditioning": 0.35,
+    "experiment_6_augmentation": 0.27,
+    "experiment_7_acgan": 0.48,
+    "experiment_8_deeper_architecture": 0.26,
+    "experiment_9_alternating_downsample_and_upsample_layers": 0.27,
+    "experiment_10_residual_connections": 0.32,
+    "final_model": 0.29
+  }
+}
