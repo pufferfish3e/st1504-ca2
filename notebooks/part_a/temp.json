@@ -1,0 +1,97 @@
+{
+  "active": null,
+  "checkpoint_retrain": {
+    "configuration": "experiment_6_augmentation",
+    "metrics": {
+      "final_val_fake_d_loss": 0.613413,
+      "final_val_g_loss": 0.821573,
+      "final_val_real_d_loss": 0.542897
+    },
+    "model_path": "C:\\Users\\Admin\\Desktop\\st1504-ca2\\notebooks\\part_a\\best_gan.pt",
+    "provenance": "Fresh same-configuration retrain saved after the evaluated kernel closed; not bit-identical to the generator evaluated in cells 93-96.",
+    "sha256": "396b9e4334c24e4c829c8c94caaad5b59e82df42ea21d76c15617580874428c1"
+  },
+  "completed": {
+    "experiment_10_residual_connections": {
+      "fid_score": 138.462479,
+      "final_val_fake_d_loss": 0.157023,
+      "final_val_g_loss": 2.085571,
+      "final_val_real_d_loss": 1.279159,
+      "quality_score": null
+    },
+    "experiment_1_ttur": {
+      "fid_score": 277.624054,
+      "final_val_fake_d_loss": 0.693146,
+      "final_val_g_loss": 0.693159,
+      "final_val_real_d_loss": 0.693267,
+      "quality_score": null
+    },
+    "experiment_2_labelsmoothing": {
+      "fid_score": 119.925743,
+      "final_val_fake_d_loss": 0.542916,
+      "final_val_g_loss": 0.921621,
+      "final_val_real_d_loss": 0.545024,
+      "quality_score": null
+    },
+    "experiment_3_spectralnorm": {
+      "fid_score": 174.006699,
+      "final_val_fake_d_loss": 0.676673,
+      "final_val_g_loss": 0.710209,
+      "final_val_real_d_loss": 0.70064,
+      "quality_score": null
+    },
+    "experiment_4_greyscale": {
+      "fid_score": 109.257645,
+      "final_val_fake_d_loss": 0.712309,
+      "final_val_g_loss": 0.697734,
+      "final_val_real_d_loss": 0.503359,
+      "quality_score": null
+    },
+    "experiment_5_engineered_conditioning": {
+      "fid_score": 123.245125,
+      "final_val_fake_d_loss": 0.59294,
+      "final_val_g_loss": 0.863449,
+      "final_val_real_d_loss": 0.462868,
+      "quality_score": null
+    },
+    "experiment_6_augmentation": {
+      "fid_score": 117.603127,
+      "final_val_fake_d_loss": 0.502953,
+      "final_val_g_loss": 1.005333,
+      "final_val_real_d_loss": 0.596925,
+      "quality_score": null
+    },
+    "experiment_7_acgan": {
+      "fid_score": 122.709625,
+      "final_val_fake_d_loss": 0.551414,
+      "final_val_g_loss": 0.901835,
+      "final_val_real_d_loss": 1.80973,
+      "quality_score": null
+    },
+    "experiment_8_deeper_architecture": {
+      "fid_score": 138.292236,
+      "final_val_fake_d_loss": 0.669503,
+      "final_val_g_loss": 0.780252,
+      "final_val_real_d_loss": 0.639291,
+      "quality_score": null
+    },
+    "experiment_9_alternating_downsample_and_upsample_layers": {
+      "fid_score": 175.629944,
+      "final_val_fake_d_loss": 0.337385,
+      "final_val_g_loss": 1.37667,
+      "final_val_real_d_loss": 0.855096,
+      "quality_score": null
+    },
+    "final_model": {
+      "fid_score": 123.502708,
+      "final_val_fake_d_loss": 0.65004,
+      "final_val_g_loss": 0.796541,
+      "final_val_real_d_loss": 0.543213,
+      "quality_score": 0.165
+    }
+  },
+  "notebook": "C:\\Users\\Admin\\Desktop\\st1504-ca2\\notebooks\\part_a\\gan_improvement.ipynb",
+  "schema_version": 1,
+  "status": "complete",
+  "updated_at": "2026-08-09T18:43:52.395587+00:00"
+}
