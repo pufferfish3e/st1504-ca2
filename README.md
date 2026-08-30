@@ -1,12 +1,76 @@
-ST1504 CA2 — Deep Learning
+# ST1504 CA2 — Generative Models and Reinforcement Learning
 
-Coursework project exploring generative deep learning and reinforcement learning using PyTorch.
+A PyTorch coursework project investigating two different learning problems: generating class-conditioned images and learning pendulum control under changing gravitational dynamics.
 
-The project is divided into two main components:
+The project follows a **baseline → controlled experiments → final evaluation** workflow, with implementations, visualisations and analysis in Jupyter notebooks.
 
-Part A — Generative Models: Conditional Variational Autoencoders (CVAE) and Conditional GANs for CIFAR-10 image generation.
-Part B — Reinforcement Learning: Deep Q-Networks (DQN) for controlling the Pendulum environment under different gravity conditions.
-Project Structure
+| Component | Task | Models / environment |
+| --- | --- | --- |
+| **Part A — Generative modelling** | Generate 32 × 32 RGB images conditioned on CIFAR-10 classes | Conditional VAE and conditional DCGAN |
+| **Part B — Reinforcement learning** | Learn pendulum control across four gravity settings | DQN variants in Gymnasium’s `Pendulum-v1` |
+
+## Experiments
+
+### Part A — Conditional image generation
+
+The generative modelling workflow starts with shared CIFAR-10 exploratory analysis, followed by separate VAE and GAN baselines, improvement experiments and a final side-by-side comparison.
+
+The **Conditional Variational Autoencoder (CVAE)** learns a class-conditioned latent representation through reconstruction and KL-divergence losses. The **conditional DCGAN** learns through adversarial training between a generator and discriminator.
+
+| Model | Experiments |
+| --- | --- |
+| **CVAE** | Latent dimensionality, KL weighting / β-VAE, architecture depth, colour versus grayscale, engineered conditioning features and data augmentation |
+| **Conditional GAN** | Two-Time-Scale Update Rule (TTUR), label smoothing, spectral normalisation, colour versus grayscale, engineered conditioning features and data augmentation |
+
+The notebooks also examine latent representations, generated samples, training behaviour and generation quality. The experiments evaluate individual design choices; they are not a claim that every tested technique improves the final model.
+
+### Part B — Pendulum control
+
+The reinforcement learning component implements DQN with experience replay, a target network and epsilon-greedy exploration. Pendulum’s continuous torque range is discretised so the agent can select from a finite set of actions.
+
+The five-action baseline is compared with **Double DQN**, **Dueling DQN**, **Double Dueling DQN** and **vanilla DQN with nine torque bins**. The nine-bin experiment changes the action discretisation without adding the Double or Dueling modifications.
+
+Agents are tested at `g = 10`, `g = 0`, `g = -10` and `g = 15`. The improvement notebook uses three training seeds for the variant experiments and five for the selected final configuration, with a budget of 100,000 environment steps per training run.
+
+## Recorded results
+
+These tables reproduce **saved notebook outputs**, not independently rerun benchmarks.
+
+### Generative model comparison
+
+| Model | NMI ↑ — mean ± standard deviation | FID ↓ |
+| --- | ---: | ---: |
+| Conditional VAE | 0.1177 ± 0.0103 | 179.6610 |
+| Conditional GAN | **0.1982 ± 0.0109** | **122.6940** |
+
+**Evaluation protocol:** each model generates 1,000 images per generation seed, with 100 images for each CIFAR-10 class. NMI is evaluated using the same classifier over generation seeds `123`, `456` and `789`. These are repeated samples from trained models, not three independent training runs. FID uses generation seed `123`, 1,000 generated images and 1,000 real validation images.
+
+NMI measures association between requested classes and classifier-predicted labels; it is not a direct measure of visual realism. FID measures a difference between real and generated feature distributions. The GAN scores better on both metrics in this saved comparison, but the limited FID sample size and classifier-based evaluation constrain the conclusion.
+
+Source: [`vae_gan_comparison.ipynb`](notebooks/part_a/vae_gan_comparison.ipynb). Metrics from separate experiment result files may differ; this table uses the common comparison run only.
+
+### Pendulum control
+
+Higher evaluation return is better.
+
+| Gravity setting | Baseline DQN — mean return | Final nine-action DQN — mean ± standard deviation |
+| --- | ---: | ---: |
+| Standard — `g = 10` | -133.64 | -135.45 ± 2.05 |
+| Zero gravity — `g = 0` | -0.08 | -1964.09 ± 107.94 |
+| Anti-gravity — `g = -10` | -109.08 | -108.98 ± 0.62 |
+| Supergravity — `g = 15` | -268.80 | -463.94 ± 194.26 |
+
+The final values summarise five training seeds, with 20 final-evaluation episodes per seed.
+
+The nine-action configuration was selected among the tested variants using development evaluations. However, its final results **do not show an overall improvement over the baseline**: standard-gravity and anti-gravity returns remain close to baseline, while zero-gravity and supergravity performance regress substantially.
+
+Source: [`rl_improvement.ipynb`](notebooks/part_b/rl_improvement.ipynb), including its loaded baseline results and final-model evaluation.
+
+## Repository structure
+
+Main notebooks and supporting directories:
+
+```text
 st1504-ca2/
 ├── notebooks/
 │   ├── part_a/
@@ -16,223 +80,91 @@ st1504-ca2/
 │   │   ├── gan_baseline.ipynb
 │   │   ├── gan_improvement.ipynb
 │   │   └── vae_gan_comparison.ipynb
-│   │
 │   └── part_b/
 │       ├── rl_baseline.ipynb
 │       └── rl_improvement.ipynb
-│
-├── model_checkpoints/
 ├── models/
+├── model_checkpoints/
 ├── results/
 ├── images/
 ├── papers/
 ├── contributions/
 ├── requirements.txt
 └── ST1504 CA2.pdf
-Part A — Generative Models
+```
 
-Part A investigates class-conditioned image generation on the CIFAR-10 dataset.
+## Setup
 
-Exploratory Data Analysis
+### 1. Clone the repository
 
-vae_gan_eda.ipynb
-
-Shared analysis used by both generative approaches, including:
-
-Class distribution
-Sample visualisation
-Pixel and colour-channel statistics
-Per-class visual complexity
-Mean class images
-Class similarity
-PCA and t-SNE analysis
-Colour versus grayscale comparisons
-Conditional Variational Autoencoder
-
-vae_baseline.ipynb
-
-Implements a Conditional VAE with:
-
-Conditional encoder and decoder
-Reparameterisation trick
-Reconstruction and KL-divergence loss
-Latent-space visualisation
-Latent interpolation
-Class-conditioned generation
-Generated-image evaluation
-
-vae_improvement.ipynb
-
-Tests multiple improvements to the baseline:
-
-Latent dimensionality
-KL weighting / β-VAE
-Network depth
-Colour vs grayscale inputs
-Engineered conditioning features
-Data augmentation
-
-The best configuration is subsequently retrained and evaluated as the final VAE.
-
-Conditional GAN
-
-gan_baseline.ipynb
-
-Implements a Conditional DCGAN with:
-
-Conditional generator
-Conditional discriminator
-Adversarial training
-Fixed-noise training progression
-Mode-collapse diagnostics
-Nearest-neighbour memorisation checks
-Class-conditioned image generation
-
-gan_improvement.ipynb
-
-Investigates:
-
-Two-Time-Scale Update Rule (TTUR)
-Label smoothing
-Spectral normalisation
-Colour vs grayscale inputs
-Engineered conditioning features
-Data augmentation
-VAE vs GAN
-
-vae_gan_comparison.ipynb
-
-Provides the final comparison between the two generative architectures based on:
-
-Generated-image quality
-Class consistency
-Diversity
-Training stability
-Qualitative sample comparisons
-Part B — Reinforcement Learning
-
-Part B investigates whether a Deep Q-Network can learn pendulum control under changes to the environment's gravitational dynamics.
-
-DQN Baseline
-
-rl_baseline.ipynb
-
-The baseline implements:
-
-Experience replay
-Target networks
-Epsilon-greedy exploration
-Action-space discretisation
-Neural-network Q-function approximation
-Multi-seed evaluation
-Training and stability diagnostics
-
-The agent is evaluated under four gravity configurations:
-
-Environment	Gravity
-Free fall	g = 0
-Anti-gravity	g = -10
-Standard gravity	g = 10
-Supergravity	g = 15
-
-The baseline DQN outperformed the non-learning reference policies across all tested gravity settings, although performance became less stable under supergravity.
-
-DQN Improvements
-
-rl_improvement.ipynb
-
-The improvement stage evaluates several DQN variants:
-
-Double DQN
-Dueling DQN
-Double Dueling DQN
-Finer torque discretisation
-
-Additional diagnostics include:
-
-Torque saturation
-Q-value overestimation
-Seed-to-seed variance
-Final evaluation return
-
-The strongest configuration is selected using a predefined decision rule before being retrained as the final model.
-
-Tech Stack
-Python
-PyTorch
-Torchvision
-NumPy
-Pandas
-Matplotlib
-Seaborn
-scikit-learn
-Hugging Face Datasets
-Jupyter
-Installation
-
-Clone the repository:
-
+```bash
 git clone https://github.com/pufferfish3e/st1504-ca2.git
 cd st1504-ca2
-
-Create and activate a virtual environment:
-
 python -m venv .venv
+```
+
+Use `python3` instead of `python` where required by your installation.
+
+Activate the environment on macOS or Linux:
+
+```bash
 source .venv/bin/activate
+```
 
-On Windows:
+On Windows PowerShell:
 
-.venv\Scripts\activate
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
 
-Install the dependencies:
+### 2. Install the core dependencies
 
-pip install -r requirements.txt
+```bash
+python -m pip install --upgrade pip
+python -m pip install torch torchvision
+python -m pip install jupyterlab ipykernel numpy pandas matplotlib seaborn scikit-learn scipy pillow tqdm
+python -m pip install datasets torchmetrics torch-fidelity h5py "gymnasium[classic-control]"
+```
 
-Then launch Jupyter:
+For a particular CUDA build, replace the PyTorch installation command with the command from the [official PyTorch installation selector](https://pytorch.org/get-started/locally/) for your operating system and hardware.
 
-jupyter notebook
-Recommended Execution Order
-Part A
+> **Environment note:** `requirements.txt` pins CUDA-specific PyTorch and Torchvision builds (`+cu132`) and omits dependencies used by the notebooks, including Gymnasium and h5py, as well as a Jupyter frontend. It is not a complete, cross-platform installation recipe. The commands above install the core dependencies without those CUDA-specific pins; optional diagnostic cells may require additional packages. This setup has not been independently tested as an exact reproduction of the original training environment.
+
+### 3. Launch JupyterLab
+
+```bash
+python -m ipykernel install --user --name st1504-ca2 --display-name "ST1504 CA2"
+jupyter lab
+```
+
+Select the **ST1504 CA2** kernel when opening a notebook. CIFAR-10 is loaded through Hugging Face Datasets using `uoft-cs/cifar10`; the initial download requires an internet connection.
+
+## Running the notebooks
+
+### Part A
+
+Start with [`vae_gan_eda.ipynb`](notebooks/part_a/vae_gan_eda.ipynb), then run each model’s baseline before its improvement notebook:
+
+```text
 vae_gan_eda.ipynb
-        │
-        ├──► vae_baseline.ipynb
-        │        └──► vae_improvement.ipynb
-        │
-        └──► gan_baseline.ipynb
-                 └──► gan_improvement.ipynb
+├── vae_baseline.ipynb → vae_improvement.ipynb
+└── gan_baseline.ipynb → gan_improvement.ipynb
 
-vae_improvement + gan_improvement
-                │
-                ▼
-      vae_gan_comparison.ipynb
-Part B
-rl_baseline.ipynb
-        │
-        ▼
-rl_improvement.ipynb
-Key Concepts Explored
-Generative Deep Learning
-Variational Autoencoders
-Generative Adversarial Networks
-Conditional generation
-Latent representations
-KL regularisation
-Adversarial optimisation
-Mode collapse
-Image-quality evaluation
-Reinforcement Learning
-Markov Decision Processes
-Q-learning
-Deep Q-Networks
-Experience replay
-Target networks
-Double DQN
-Dueling architectures
-Exploration vs exploitation
-Action discretisation
-Policy robustness under environmental changes
-Repository Notes
+Both final models → vae_gan_comparison.ipynb
+```
 
-Model checkpoints, generated images and experimental result artifacts are retained in the repository to support reproducibility and comparison between experiments.
+The comparison notebook loads `models/vae_final.pt`, `models/gan_final.pt` and the shared evaluator at `models/vae_classifier.pt`.
 
-The project was developed for ST1504 CA2.
+### Part B
+
+```text
+rl_baseline.ipynb → rl_improvement.ipynb
+```
+
+The improvement notebook reads `results/part_b/rl_baseline_results.json`. It defaults to `LOAD_PRETRAINED_MODELS = True`, which loads the expected saved checkpoints and raises an error when a required checkpoint is missing. Set it to `False` to train the configurations instead.
+
+### Paths and saved artifacts
+
+Run notebook kernels with their working directory set to the notebook’s containing folder: `notebooks/part_a/` or `notebooks/part_b/`. Paths such as `../../models` and `../../results` are resolved relative to that directory.
+
+Re-executing notebooks can overwrite result files and checkpoints. Load checkpoints using the matching model definitions and configurations in the notebooks; the presence of a saved checkpoint does not establish that a fresh run will reproduce every reported metric.
